@@ -10,7 +10,8 @@ const initialGameState: GameState = {
   score: 0,
   gamePhase: 'splash',
   completedScenarios: [],
-  chaosEventTriggered: false
+  chaosEventTriggered: false,
+  chaosEventsCount: 0
 };
 
 export function useGameState() {
@@ -65,6 +66,7 @@ export function useGameState() {
       finalReputation: gameState.reputation,
       totalScore: gameState.score,
       title: getDesignerTitle(gameState.stress, gameState.reputation, gameState.score),
+      chaosEventsCount: gameState.chaosEventsCount,
       completionTime: new Date().toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'long',

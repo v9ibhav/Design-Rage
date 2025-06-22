@@ -5,9 +5,12 @@ interface SplashScreenProps {
   onStart: () => void;
   onShowAbout: () => void;
   onShowCredits: () => void;
+  onLogin: () => void;
+  isLoggedIn: boolean;
+  username?: string;
 }
 
-export default function SplashScreen({ onStart, onShowAbout, onShowCredits }: SplashScreenProps) {
+export default function SplashScreen({ onStart, onShowAbout, onShowCredits, onLogin, isLoggedIn, username }: SplashScreenProps) {
   const [isAnimating, setIsAnimating] = useState(true);
 
   useEffect(() => {
@@ -61,32 +64,33 @@ export default function SplashScreen({ onStart, onShowAbout, onShowCredits }: Sp
         }`}>
           <button
             onClick={onStart}
-            className="w-full bg-gradient-to-r from-pink-600 to-blue-600 hover:from-pink-500 hover:to-blue-500 text-white font-bold py-4 px-8 rounded-lg transform transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-pink-500/25 border border-pink-500/30"
+            className="w-full bg-gradient-to-r from-pink-600 to-blue-600 hover:from-pink-500 hover:to-blue-500 text-white font-bold py-3 sm:py-4 px-4 sm:px-8 rounded-lg transform transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-pink-500/25 border border-pink-500/30"
           >
-            <div className="flex items-center justify-center space-x-3">
-              <Play className="w-6 h-6" />
-              <span className="text-xl">START SURVIVING</span>
+            <div className="flex items-center justify-center space-x-2 sm:space-x-3">
+              <Play className="w-5 h-5 sm:w-6 sm:h-6" />
+              <span className="text-lg sm:text-xl">START SURVIVING</span>
             </div>
           </button>
 
-          <div className="flex space-x-4">
+
+          <div className="flex space-x-3 sm:space-x-4">
             <button
               onClick={onShowAbout}
-              className="flex-1 bg-gray-800 hover:bg-gray-700 text-gray-300 font-medium py-3 px-6 rounded-lg transition-all duration-200 border border-gray-600 hover:border-gray-500"
+              className="flex-1 bg-gray-800 hover:bg-gray-700 text-gray-300 font-medium py-2.5 sm:py-3 px-2 sm:px-6 rounded-lg transition-all duration-200 border border-gray-600 hover:border-gray-500"
             >
-              <div className="flex items-center justify-center space-x-2">
-                <Info className="w-4 h-4" />
-                <span>About</span>
+              <div className="flex items-center justify-center space-x-1 sm:space-x-2">
+                <Info className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                <span className="text-sm sm:text-base">About</span>
               </div>
             </button>
 
             <button
               onClick={onShowCredits}
-              className="flex-1 bg-gray-800 hover:bg-gray-700 text-gray-300 font-medium py-3 px-6 rounded-lg transition-all duration-200 border border-gray-600 hover:border-gray-500"
+              className="flex-1 bg-gray-800 hover:bg-gray-700 text-gray-300 font-medium py-2.5 sm:py-3 px-2 sm:px-6 rounded-lg transition-all duration-200 border border-gray-600 hover:border-gray-500"
             >
-              <div className="flex items-center justify-center space-x-2">
-                <Users className="w-4 h-4" />
-                <span>Credits</span>
+              <div className="flex items-center justify-center space-x-1 sm:space-x-2">
+                <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                <span className="text-sm sm:text-base">Credits</span>
               </div>
             </button>
           </div>

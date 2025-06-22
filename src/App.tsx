@@ -1,14 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import NavigationBar from './components/NavigationBar';
 import SplashScreen from './components/SplashScreen';
 import Tutorial from './components/Tutorial';
 import GameScreen from './components/GameScreen';
 import ResultsScreen from './components/ResultsScreen';
+import LoginScreen from './components/LoginScreen';
+import UserProfile from './components/UserProfile';
 import { useGameState } from './hooks/useGameState';
+import { useAuth } from './hooks/useAuth';
+import { useUserProfile } from './hooks/useUserProfile';
 import { shareResults, exportResults } from './utils/sharing';
 import { GameResult } from './types/game';
 
 function App() {
+
   const {
     gameState,
     updateGameState,
@@ -20,13 +25,23 @@ function App() {
     saveGame
   } = useGameState();
 
+  const { user, login, logout, isAuthenticated } = useAuth();
+  const { userProfile, addGameResult } = useUserProfile(user.username);
+
   const [gameResult, setGameResult] = useState<GameResult | null>(null);
   const [showAbout, setShowAbout] = useState(false);
   const [showCredits, setShowCredits] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
 
   const handleGameComplete = () => {
     const result = completeGame();
     setGameResult(result);
+
+    // If user is logged in, add the result to their profile
+    if (isAuthenticated) {
+      addGameResult(result);
+    }
   };
 
   const handleRestart = () => {
@@ -40,14 +55,34 @@ function App() {
   };
 
   const handleSave = () => {
-    const success = saveGame();
-    if (success) {
-      // Show feedback
-      const button = document.querySelector('[title="Save Progress"]');
-      if (button) {
-        button.classList.add('animate-pulse');
-        setTimeout(() => button.classList.remove('animate-pulse'), 1000);
+    if (!isAuthenticated) {
+      // Redirect to login if not authenticated
+      setShowLogin(true);
+      return;
+    }
+
+    // Only try to save if the game is in progress
+    if (gameState.gamePhase === 'playing') {
+      const success = saveGame();
+      if (success) {
+        // Show feedback
+        const button = document.querySelector('[title^="Save Progress"]');
+        if (button) {
+          button.classList.add('animate-pulse');
+          setTimeout(() => button.classList.remove('animate-pulse'), 1000);
+        }
+        showNotification('Game progress saved successfully!', 'success');
+      } else {
+        showNotification('Failed to save game progress', 'error');
       }
+    } else if (gameState.gamePhase === 'results') {
+      // If we're on results screen, we want to save the result to profile
+      if (gameResult) {
+        addGameResult(gameResult);
+        showNotification('Game results saved to your profile!', 'success');
+      }
+    } else {
+      showNotification('No game in progress to save', 'info');
     }
   };
 
@@ -62,6 +97,46 @@ function App() {
       exportResults(gameResult);
     }
   };
+
+  const handleLoginClick = () => {
+    if (isAuthenticated) {
+      setShowProfile(true);
+    } else {
+      setShowLogin(true);
+    }
+  };
+
+  const handleLogin = (username: string, password: string) => {
+    const success = login(username, password);
+    if (success) {
+      setShowLogin(false);
+      setShowProfile(true);
+    }
+    return success;
+  };
+
+  const handleLogout = () => {
+    logout();
+    setShowProfile(false);
+  };
+
+  const handleBackFromLogin = () => {
+    setShowLogin(false);
+  };
+
+  const handleBackFromProfile = () => {
+    setShowProfile(false);
+  };
+
+  // Login Screen
+  if (showLogin) {
+    return <LoginScreen onLogin={handleLogin} onBack={handleBackFromLogin} />;
+  }
+
+  // Profile Screen
+  if (showProfile) {
+    return <UserProfile username={user.username} onLogout={handleLogout} onHome={handleBackFromProfile} />;
+  }
 
   // About Modal
   if (showAbout) {
@@ -152,6 +227,8 @@ function App() {
           onShare={handleShare}
           onExport={handleExport}
           showBack={gameState.gamePhase === 'tutorial'}
+          isAuthenticated={isAuthenticated}
+          username={user.username}
         />
       )}
 
@@ -161,6 +238,9 @@ function App() {
           onStart={startNewGame}
           onShowAbout={() => setShowAbout(true)}
           onShowCredits={() => setShowCredits(true)}
+          onLogin={handleLoginClick}
+          isLoggedIn={isAuthenticated}
+          username={user.username}
         />
       )}
 
@@ -185,6 +265,8 @@ function App() {
           onRestart={handleRestart}
           onShare={handleShare}
           onExport={handleExport}
+          isAuthenticated={isAuthenticated}
+          onLogin={handleLoginClick}
         />
       )}
     </div>

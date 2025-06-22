@@ -6,6 +6,7 @@ export interface GameState {
   gamePhase: 'splash' | 'tutorial' | 'playing' | 'results';
   completedScenarios: number[];
   chaosEventTriggered: boolean;
+  chaosEventsCount: number;
 }
 
 export interface Scenario {
@@ -37,5 +38,6 @@ export interface GameResult {
   finalReputation: number;
   totalScore: number;
   title: string;
+  chaosEventsCount: number;
   completionTime: string;
 }
