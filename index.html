@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Brief Rage - Satirical Designer Survival Game</title>
+    <meta name="description" content="Navigate client feedback chaos in this satirical web game for designers. Survive 10 rounds while balancing stress and reputation!" />
+    
+    <!-- Add some custom CSS for animations -->
+    <style>
+      @keyframes glow {
+        0%, 100% { box-shadow: 0 0 20px rgba(236, 72, 153, 0.3); }
+        50% { box-shadow: 0 0 30px rgba(236, 72, 153, 0.6); }
+      }
+      
+      .animation-delay-1000 {
+        animation-delay: 1000ms;
+      }
+      
+      .animation-delay-2000 {
+        animation-delay: 2000ms;
+      }
+      
+      /* Custom scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      
+      ::-webkit-scrollbar-track {
+        background: rgba(31, 41, 55, 0.3);
+      }
+      
+      ::-webkit-scrollbar-thumb {
+        background: rgba(236, 72, 153, 0.5);
+        border-radius: 4px;
+      }
+      
+      ::-webkit-scrollbar-thumb:hover {
+        background: rgba(236, 72, 153, 0.7);
+      }
+      
+      /* Loading animation */
+      @keyframes pulse-glow {
+        0%, 100% {
+          opacity: 1;
+          box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+        }
+        50% {
+          opacity: 0.7;
+          box-shadow: 0 0 40px rgba(236, 72, 153, 0.6);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
