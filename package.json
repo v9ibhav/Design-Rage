@@ -1,8 +1,9 @@
 {
-  "name": "vite-react-typescript-starter",
+  "name": "design-rage",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "description": "A satirical web game about surviving client feedback chaos",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

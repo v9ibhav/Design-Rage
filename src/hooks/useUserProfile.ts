@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { UserProfile, UserStats, Achievement, DEFAULT_ACHIEVEMENTS, ACHIEVEMENTS } from '../types/user';
 import { GameResult } from '../types/game';
 
-const STORAGE_KEY = 'brief-rage-user-profile';
+const STORAGE_KEY = 'design-rage-user-profile';
 
 // Initial user stats
 const initialUserStats: UserStats = {

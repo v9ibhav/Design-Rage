@@ -20,7 +20,7 @@ async function generateResultImage(result: GameResult): Promise<Blob> {
   ctx.font = 'bold 60px Inter, system-ui, sans-serif';
   ctx.fillStyle = '#ec4899';
   ctx.textAlign = 'center';
-  ctx.fillText('Brief Rage', canvas.width / 2, 100);
+  ctx.fillText('Design Rage', canvas.width / 2, 100);
 
   // Add result details
   ctx.font = 'bold 48px Inter, system-ui, sans-serif';
@@ -51,7 +51,7 @@ async function generateResultImage(result: GameResult): Promise<Blob> {
   ctx.fillStyle = '#6b7280';
   ctx.textAlign = 'center';
   ctx.fillText('Think you can handle the client chaos better?', canvas.width / 2, 540);
-  ctx.fillText('Play Brief Rage now!', canvas.width / 2, 580);
+  ctx.fillText('Play Design Rage now!', canvas.width / 2, 580);
 
   // Convert canvas to blob
   return new Promise((resolve) => {
@@ -61,27 +61,44 @@ async function generateResultImage(result: GameResult): Promise<Blob> {
   });
 }
 
+export function generateShareCard(result: GameResult): string {
+  // Generate a simple text-based share card
+  return `
+╔═══════════════════════════════╗
+║          DESIGN RAGE         ║
+║        SURVIVAL REPORT        ║
+╠═══════════════════════════════╣
+║                               ║
+║ 🏆 ${result.title.padEnd(24)} ║
+║                               ║
+║ 📊 FINAL STATS:               ║
+║ • Stress: ${Math.round(result.finalStress).toString().padEnd(18)}% ║
+║ • Reputation: ${Math.round(result.finalReputation).toString().padEnd(12)}% ║
+║ • Score: ${Math.round(result.totalScore).toString().padEnd(17)} ║
+║                               ║
+║ 📅 ${result.completionTime.padEnd(24)} ║
+║                               ║
+╚═══════════════════════════════╝
+  `.trim();
+}
+
 export async function shareResults(result: GameResult): Promise<void> {
-  const text = `🎮 Just survived Brief Rage! 
-
-🏆 Designer Title: ${result.title}
-📊 Final Stats:
-• Stress: ${Math.round(result.finalStress)}%
-• Reputation: ${Math.round(result.finalReputation)}%
-• Score: ${Math.round(result.totalScore)}
-
-Think you can handle the client chaos better? Try Brief Rage!
-#BriefRage #DesignLife #GameDev`;
+  const text = `🎮 Just survived Design Rage!
+Stress: ${Math.round(result.finalStress)}%
+Reputation: ${Math.round(result.finalReputation)}%
+Score: ${Math.round(result.totalScore)}
+Think you can handle the client chaos better? Try Design Rage!
+#DesignRage #DesignLife #GameDev`;
 
   try {
     // Generate the image
     const imageBlob = await generateResultImage(result);
-    const imageFile = new File([imageBlob], 'brief-rage-result.png', { type: 'image/png' });
+    const imageFile = new File([imageBlob], 'design-rage-result.png', { type: 'image/png' });
 
     if (navigator.share && navigator.canShare && navigator.canShare({ files: [imageFile] })) {
       // Share with image if supported
       await navigator.share({
-        title: 'Brief Rage Results',
+        title: 'Design Rage Results',
         text: text,
         files: [imageFile],
         url: window.location.href
@@ -89,7 +106,7 @@ Think you can handle the client chaos better? Try Brief Rage!
     } else if (navigator.share) {
       // Fallback to regular share if image sharing not supported
       await navigator.share({
-        title: 'Brief Rage Results',
+        title: 'Design Rage Results',
         text: text,
         url: window.location.href
       });
@@ -97,7 +114,7 @@ Think you can handle the client chaos better? Try Brief Rage!
       // Fallback for browsers without share API
       const downloadLink = document.createElement('a');
       downloadLink.href = URL.createObjectURL(imageBlob);
-      downloadLink.download = 'brief-rage-result.png';
+      downloadLink.download = 'design-rage-result.png';
       downloadLink.click();
       URL.revokeObjectURL(downloadLink.href);
     }
@@ -119,7 +136,7 @@ export async function exportResults(result: GameResult): Promise<void> {
     const imageBlob = await generateResultImage(result);
     const downloadLink = document.createElement('a');
     downloadLink.href = URL.createObjectURL(imageBlob);
-    downloadLink.download = `brief-rage-result-${Date.now()}.png`;
+    downloadLink.download = `design-rage-result-${Date.now()}.png`;
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
@@ -128,25 +145,4 @@ export async function exportResults(result: GameResult): Promise<void> {
     console.error('Error exporting results:', error);
     alert('Could not export results. Please try again.');
   }
-}
-
-export function generateShareCard(result: GameResult): string {
-  // Generate a simple text-based share card
-  return `
-╔═══════════════════════════════╗
-║           BRIEF RAGE          ║
-║        SURVIVAL REPORT        ║
-╠═══════════════════════════════╣
-║                               ║
-║ 🏆 ${result.title.padEnd(24)} ║
-║                               ║
-║ 📊 FINAL STATS:               ║
-║ • Stress: ${Math.round(result.finalStress).toString().padEnd(18)}% ║
-║ • Reputation: ${Math.round(result.finalReputation).toString().padEnd(12)}% ║
-║ • Score: ${Math.round(result.totalScore).toString().padEnd(17)} ║
-║                               ║
-║ 📅 ${result.completionTime.padEnd(24)} ║
-║                               ║
-╚═══════════════════════════════╝
-  `.trim();
 }

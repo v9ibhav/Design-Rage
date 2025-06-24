@@ -5,7 +5,7 @@ type AuthUser = {
   isLoggedIn: boolean;
 };
 
-const STORAGE_KEY = 'brief-rage-auth';
+const STORAGE_KEY = 'design-rage-auth';
 
 export function useAuth() {
   const [user, setUser] = useState<AuthUser>({ username: '', isLoggedIn: false });

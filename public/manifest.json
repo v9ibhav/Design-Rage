@@ -1,6 +1,6 @@
 {
-  "short_name": "Brief Rage",
-  "name": "Brief Rage - Design Hell Simulator",
+  "short_name": "Design Rage",
+  "name": "Design Rage - Design Hell Simulator",
   "description": "A satirical web game about surviving client feedback",
   "icons": [
     {
@@ -23,7 +23,7 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#111827",
-  "background_color": "#111827",
+  "theme_color": "#000000",
+  "background_color": "#ffffff",
   "orientation": "portrait"
 }

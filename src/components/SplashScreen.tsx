@@ -27,7 +27,7 @@ export default function SplashScreen({ onStart, onShowAbout, onShowCredits, onLo
             isAnimating ? 'scale-150 opacity-0' : 'scale-100 opacity-100'
           }`}>
             <span className="text-transparent bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 bg-clip-text animate-pulse">
-              BRIEF
+              DESIGN
             </span>
           </h1>
           <h1 className={`text-6xl md:text-7xl font-bold transform transition-all duration-1000 delay-300 ${

@@ -11,7 +11,7 @@ export default function Tutorial({ onComplete, onSkip }: TutorialProps) {
 
   const tutorialSteps = [
     {
-      title: "Welcome to Brief Rage! 🎮",
+      title: "Welcome to Design Rage! 🎮",
       content: "You're a designer navigating the chaotic world of client feedback. Your goal? Survive 10 rounds without losing your sanity or reputation!",
       emoji: "🎯"
     },

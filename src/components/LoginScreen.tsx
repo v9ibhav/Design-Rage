@@ -69,7 +69,7 @@ export default function LoginScreen({ onLogin, onBack }: LoginScreenProps) {
         <div className="mb-6 text-center">
           <h1 className="text-3xl md:text-4xl font-bold mb-2">
             <span className="text-transparent bg-gradient-to-r from-pink-400 to-blue-400 bg-clip-text">
-              Brief Rage
+              Design Rage
             </span>
           </h1>
           <p className="text-lg text-gray-300 mb-2">Player Login</p>

@@ -40,7 +40,7 @@ export default function NavigationBar({
             )}
 
             <h1 className="text-lg sm:text-xl font-bold text-transparent bg-gradient-to-r from-pink-400 to-blue-400 bg-clip-text">
-              Brief Rage
+              Design Rage
             </h1>
           </div>
 

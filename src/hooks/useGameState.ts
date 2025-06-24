@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { GameState, GameResult } from '../types/game';
 import { getScenarios, resetScenarios } from '../data/scenarios';
 
-const STORAGE_KEY = 'brief-rage-game-state';
+const STORAGE_KEY = 'design-rage-game-state';
 
 const initialGameState: GameState = {
   currentRound: 1,

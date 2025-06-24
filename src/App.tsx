@@ -144,21 +144,21 @@ function App() {
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/10 to-gray-900 flex items-center justify-center p-4">
         <div className="max-w-2xl bg-gray-800/70 backdrop-blur-sm rounded-2xl p-8 border border-gray-700">
           <h2 className="text-3xl font-bold text-transparent bg-gradient-to-r from-pink-400 to-blue-400 bg-clip-text mb-6">
-            About Brief Rage
+            About Design Rage
           </h2>
           <div className="space-y-4 text-gray-300 leading-relaxed">
             <p>
-              Brief Rage is a satirical web game that puts you in the shoes of a designer 
-              navigating the chaotic world of client feedback. Can you survive 10 rounds 
+              Design Rage is a satirical web game that puts you in the shoes of a designer
+              navigating the chaotic world of client feedback. Can you survive 10 rounds
               of impossible requests while maintaining your sanity AND reputation?
             </p>
             <p>
-              Every response affects your stress and reputation levels. Choose wisely between 
-              professional diplomacy, witty deflection, or sarcastic honesty. Random chaos 
+              Every response affects your stress and reputation levels. Choose wisely between
+              professional diplomacy, witty deflection, or sarcastic honesty. Random chaos
               events will test your resilience just like real client work!
             </p>
             <p>
-              Built with React, TypeScript, and Tailwind CSS. Featuring a pixel-punk aesthetic 
+              Built with React, TypeScript, and Tailwind CSS. Featuring a pixel-punk aesthetic
               with responsive design for all devices.
             </p>
           </div>
