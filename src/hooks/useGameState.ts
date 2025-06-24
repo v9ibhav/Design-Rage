@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { GameState, GameResult } from '../types/game';
+import { getScenarios, resetScenarios } from '../data/scenarios';
 
 const STORAGE_KEY = 'brief-rage-game-state';
 
@@ -11,7 +12,9 @@ const initialGameState: GameState = {
   gamePhase: 'splash',
   completedScenarios: [],
   chaosEventTriggered: false,
-  chaosEventsCount: 0
+  chaosEventsCount: 0,
+  scenariosLoading: false,
+  availableScenarios: []
 };
 
 export function useGameState() {
@@ -30,6 +33,28 @@ export function useGameState() {
     }
   }, []);
 
+  // Load scenarios when entering playing phase
+  useEffect(() => {
+    const loadScenarios = async () => {
+      if (gameState.gamePhase === 'playing' && gameState.availableScenarios.length === 0 && !gameState.scenariosLoading) {
+        setGameState(prev => ({ ...prev, scenariosLoading: true }));
+        try {
+          const scenarios = await getScenarios();
+          setGameState(prev => ({
+            ...prev,
+            availableScenarios: scenarios,
+            scenariosLoading: false
+          }));
+        } catch (error) {
+          console.error('Failed to load scenarios:', error);
+          setGameState(prev => ({ ...prev, scenariosLoading: false }));
+        }
+      }
+    };
+
+    loadScenarios();
+  }, [gameState.gamePhase, gameState.availableScenarios.length, gameState.scenariosLoading]);
+
   // Save game state whenever it changes
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(gameState));
@@ -40,6 +65,7 @@ export function useGameState() {
   };
 
   const startNewGame = () => {
+    resetScenarios(); // Reset scenarios cache
     setGameState({
       ...initialGameState,
       gamePhase: 'tutorial'
@@ -86,6 +112,7 @@ export function useGameState() {
 
   const resetGame = () => {
     localStorage.removeItem(STORAGE_KEY);
+    resetScenarios();
     setGameState(initialGameState);
   };
 

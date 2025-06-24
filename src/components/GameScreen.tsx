@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { scenarios, chaosEvents } from '../data/scenarios';
-import { GameState, Response, ChaosEvent } from '../types/game';
+import { useState, useEffect } from 'react';
+import { chaosEvents } from '../data/scenarios';
+import { GameState, Response, ChaosEvent, Scenario } from '../types/game';
 import ProgressMeters from './ProgressMeters';
 import ChaosEventModal from './ChaosEventModal';
 
@@ -11,12 +11,19 @@ interface GameScreenProps {
 }
 
 export default function GameScreen({ gameState, onUpdateGameState, onGameComplete }: GameScreenProps) {
-  const [currentScenario] = useState(() => scenarios[gameState.currentRound - 1]);
+  const [currentScenario, setCurrentScenario] = useState<Scenario | null>(null);
   const [showChaosEvent, setShowChaosEvent] = useState(false);
   const [currentChaosEvent, setCurrentChaosEvent] = useState<ChaosEvent | null>(null);
   const [responseAnimation, setResponseAnimation] = useState<string>('');
   const [showFeedback, setShowFeedback] = useState(false);
   const [selectedResponse, setSelectedResponse] = useState<Response | null>(null);
+
+  useEffect(() => {
+    if (gameState.availableScenarios.length > 0) {
+      const scenario = gameState.availableScenarios[gameState.currentRound - 1];
+      setCurrentScenario(scenario);
+    }
+  }, [gameState.currentRound, gameState.availableScenarios]);
 
   useEffect(() => {
     // Check if we should trigger a chaos event
@@ -28,6 +35,8 @@ export default function GameScreen({ gameState, onUpdateGameState, onGameComplet
   }, [gameState.currentRound, gameState.chaosEventTriggered]);
 
   const handleResponseClick = (response: Response) => {
+    if (!currentScenario) return;
+
     setSelectedResponse(response);
     setResponseAnimation('animate-pulse');
     
@@ -103,6 +112,22 @@ export default function GameScreen({ gameState, onUpdateGameState, onGameComplet
       </span>
     );
   };
+
+  if (gameState.scenariosLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-xl font-semibold text-gray-700">Loading scenarios...</div>
+      </div>
+    );
+  }
+
+  if (!currentScenario) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-xl font-semibold text-red-600">Failed to load scenario. Please try again.</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/10 to-gray-900 pt-20 p-4">

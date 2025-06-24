@@ -7,6 +7,8 @@ export interface GameState {
   completedScenarios: number[];
   chaosEventTriggered: boolean;
   chaosEventsCount: number;
+  scenariosLoading: boolean;
+  availableScenarios: Scenario[];
 }
 
 export interface Scenario {
