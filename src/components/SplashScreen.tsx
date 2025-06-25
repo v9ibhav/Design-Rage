@@ -21,6 +21,13 @@ export default function SplashScreen({ onStart, onShowAbout, onShowCredits, onLo
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/20 to-gray-900 flex items-center justify-center p-4">
       <div className="max-w-md w-full text-center space-y-8">
+        {/* Logo */}
+        <div className={`transform transition-all duration-1000 ${
+          isAnimating ? 'scale-150 opacity-0' : 'scale-100 opacity-100'
+        }`}>
+          <img src="/designrage.svg" alt="Design Rage Logo" className="w-32 h-32 mx-auto mb-4" />
+        </div>
+
         {/* Animated Title */}
         <div className="space-y-4">
           <h1 className={`text-6xl md:text-7xl font-bold transform transition-all duration-1000 ${

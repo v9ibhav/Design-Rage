@@ -39,9 +39,7 @@ export default function NavigationBar({
               </button>
             )}
 
-            <h1 className="text-lg sm:text-xl font-bold text-transparent bg-gradient-to-r from-pink-400 to-blue-400 bg-clip-text">
-              Design Rage
-            </h1>
+            <img src="/designragenav.svg" alt="Design Rage" className="h-8 sm:h-10" />
           </div>
 
           {/* Right side */}
