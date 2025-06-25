@@ -44,7 +44,6 @@ const fallbackScenarios = [
     quote: "I sent you an inspiration at 3 AM. Did you see it? Can you make it exactly like that?",
     context: "Project revision"
   }
-  // Add more fallback scenarios here
 ];
 
 export interface PicaOSResponse {
@@ -55,6 +54,19 @@ export interface PicaOSResponse {
 type ResponseType = 'professional' | 'sarcastic' | 'witty';
 
 export const fetchDesignScenarios = async (): Promise<Scenario[]> => {
+  // For now, we'll use fallback scenarios directly since the API endpoint may not be available
+  // This prevents the "Failed to fetch" error and ensures the game works
+  console.log('Using fallback scenarios for game...');
+  
+  return fallbackScenarios.map((item, index): Scenario => ({
+    id: index + 1,
+    clientQuote: item.quote,
+    context: item.context,
+    responses: generateResponses(item.context)
+  }));
+
+  /* 
+  // Commented out API call until proper endpoint and API key are configured
   try {
     console.log('Fetching scenarios from PicaOS...');
     const response = await fetch(API_URL, {
@@ -100,6 +112,7 @@ export const fetchDesignScenarios = async (): Promise<Scenario[]> => {
       responses: generateResponses(item.context)
     }));
   }
+  */
 };
 
 const generateResponses = (context: string): Response[] => {
