@@ -1,67 +1,137 @@
-import React, { useState, useEffect } from 'react';
-import { UserCheck, Lock, ArrowLeft, AlertCircle } from 'lucide-react';
+import React, { useState, useEffect } from 'react'
+import { UserCheck, Lock, ArrowLeft, AlertCircle, Mail, User } from 'lucide-react'
+import { useAuth } from '../hooks/useAuth'
 
 interface LoginScreenProps {
-  onLogin: (username: string, password: string) => void;
-  onBack: () => void;
+  onBack: () => void
 }
 
-export default function LoginScreen({ onLogin, onBack }: LoginScreenProps) {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [fieldErrors, setFieldErrors] = useState({ username: '', password: '' });
+export default function LoginScreen({ onBack }: LoginScreenProps) {
+  const [isSignUp, setIsSignUp] = useState(false)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [username, setUsername] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [fieldErrors, setFieldErrors] = useState({ 
+    email: '', 
+    password: '', 
+    username: '', 
+    confirmPassword: '' 
+  })
 
-  // Auto-focus the username field on component mount
+  const { signIn, signUp, loading } = useAuth()
+
   useEffect(() => {
-    const inputElement = document.getElementById('username');
+    const inputElement = document.getElementById(isSignUp ? 'email' : 'email')
     if (inputElement) {
-      inputElement.focus();
+      inputElement.focus()
     }
-  }, []);
+  }, [isSignUp])
 
   const validateForm = () => {
-    const errors = { username: '', password: '' };
-    let isValid = true;
+    const errors = { email: '', password: '', username: '', confirmPassword: '' }
+    let isValid = true
 
-    if (!username.trim()) {
-      errors.username = 'Username is required';
-      isValid = false;
+    // Email validation
+    if (!email.trim()) {
+      errors.email = 'Email is required'
+      isValid = false
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      errors.email = 'Please enter a valid email address'
+      isValid = false
     }
 
+    // Password validation
     if (!password) {
-      errors.password = 'Password is required';
-      isValid = false;
+      errors.password = 'Password is required'
+      isValid = false
     } else if (password.length < 6) {
-      errors.password = 'Password must be at least 6 characters';
-      isValid = false;
+      errors.password = 'Password must be at least 6 characters'
+      isValid = false
     }
 
-    setFieldErrors(errors);
-    return isValid;
-  };
+    // Sign up specific validations
+    if (isSignUp) {
+      if (!username.trim()) {
+        errors.username = 'Username is required'
+        isValid = false
+      } else if (username.length < 3) {
+        errors.username = 'Username must be at least 3 characters'
+        isValid = false
+      } else if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+        errors.username = 'Username can only contain letters, numbers, and underscores'
+        isValid = false
+      }
+
+      if (!confirmPassword) {
+        errors.confirmPassword = 'Please confirm your password'
+        isValid = false
+      } else if (password !== confirmPassword) {
+        errors.confirmPassword = 'Passwords do not match'
+        isValid = false
+      }
+    }
+
+    setFieldErrors(errors)
+    return isValid
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
+    e.preventDefault()
+    setError('')
+    setSuccess('')
 
-    if (!validateForm()) return;
+    if (!validateForm()) return
 
-    setIsSubmitting(true);
+    setIsSubmitting(true)
 
     try {
-      // Add a small delay to simulate network request
-      await new Promise(resolve => setTimeout(resolve, 500));
-
-      const success = onLogin(username, password);
-      if (!success) {
-        setError('Login failed. Password must be at least 6 characters.');
+      if (isSignUp) {
+        const result = await signUp(email, password, username)
+        if (result.success) {
+          if (result.error) {
+            setSuccess(result.error) // This is actually the confirmation message
+          } else {
+            setSuccess('Account created successfully! You can now sign in.')
+            setIsSignUp(false)
+            setEmail('')
+            setPassword('')
+            setUsername('')
+            setConfirmPassword('')
+          }
+        } else {
+          setError(result.error || 'Failed to create account')
+        }
+      } else {
+        const result = await signIn(email, password)
+        if (result.success) {
+          // Auth hook will handle the redirect
+        } else {
+          setError(result.error || 'Failed to sign in')
+        }
       }
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false)
     }
-  };
+  }
+
+  const toggleMode = () => {
+    setIsSignUp(!isSignUp)
+    setError('')
+    setSuccess('')
+    setFieldErrors({ email: '', password: '', username: '', confirmPassword: '' })
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/10 to-gray-900 flex items-center justify-center">
+        <div className="text-xl font-semibold text-gray-300">Loading...</div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/10 to-gray-900 flex items-center justify-center p-4 md:p-6">
@@ -72,9 +142,16 @@ export default function LoginScreen({ onLogin, onBack }: LoginScreenProps) {
               Design Rage
             </span>
           </h1>
-          <p className="text-lg text-gray-300 mb-2">Player Login</p>
+          <p className="text-lg text-gray-300 mb-2">
+            {isSignUp ? 'Create Account' : 'Welcome Back'}
+          </p>
           <div className="w-16 h-1 bg-gradient-to-r from-pink-500 to-blue-500 mx-auto rounded-full"></div>
-          <p className="text-sm text-gray-400 mt-3">Login to save your progress and track achievements</p>
+          <p className="text-sm text-gray-400 mt-3">
+            {isSignUp 
+              ? 'Join the community and track your design survival skills' 
+              : 'Sign in to continue your design survival journey'
+            }
+          </p>
         </div>
 
         {error && (
@@ -84,29 +161,64 @@ export default function LoginScreen({ onLogin, onBack }: LoginScreenProps) {
           </div>
         )}
 
+        {success && (
+          <div className="mb-4 p-3 bg-green-500/20 border border-green-500/30 rounded-lg text-green-300 text-sm flex items-start">
+            <AlertCircle className="w-5 h-5 mr-2 flex-shrink-0 mt-0.5" />
+            <span>{success}</span>
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="space-y-5">
+          {isSignUp && (
+            <div className="space-y-2">
+              <label htmlFor="username" className="flex justify-between text-sm font-medium text-gray-300">
+                <span>Username</span>
+                {fieldErrors.username && (
+                  <span className="text-red-400 text-xs">{fieldErrors.username}</span>
+                )}
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <User className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  type="text"
+                  id="username"
+                  value={username}
+                  onChange={(e) => {
+                    setUsername(e.target.value)
+                    if (fieldErrors.username) setFieldErrors({...fieldErrors, username: ''})
+                  }}
+                  className={`block w-full pl-10 bg-gray-700 border ${fieldErrors.username ? 'border-red-500' : 'border-gray-600'} rounded-lg py-3 text-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:border-transparent transition-all duration-200`}
+                  placeholder="Choose a username"
+                  autoComplete="username"
+                />
+              </div>
+            </div>
+          )}
+
           <div className="space-y-2">
-            <label htmlFor="username" className="flex justify-between text-sm font-medium text-gray-300">
-              <span>Username</span>
-              {fieldErrors.username && (
-                <span className="text-red-400 text-xs">{fieldErrors.username}</span>
+            <label htmlFor="email" className="flex justify-between text-sm font-medium text-gray-300">
+              <span>Email</span>
+              {fieldErrors.email && (
+                <span className="text-red-400 text-xs">{fieldErrors.email}</span>
               )}
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <UserCheck className="h-5 w-5 text-gray-400" />
+                <Mail className="h-5 w-5 text-gray-400" />
               </div>
               <input
-                type="text"
-                id="username"
-                value={username}
+                type="email"
+                id="email"
+                value={email}
                 onChange={(e) => {
-                  setUsername(e.target.value);
-                  if (fieldErrors.username) setFieldErrors({...fieldErrors, username: ''});
+                  setEmail(e.target.value)
+                  if (fieldErrors.email) setFieldErrors({...fieldErrors, email: ''})
                 }}
-                className={`block w-full pl-10 bg-gray-700 border ${fieldErrors.username ? 'border-red-500' : 'border-gray-600'} rounded-lg py-3 text-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:border-transparent transition-all duration-200`}
-                placeholder="Enter your username"
-                autoComplete="username"
+                className={`block w-full pl-10 bg-gray-700 border ${fieldErrors.email ? 'border-red-500' : 'border-gray-600'} rounded-lg py-3 text-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:border-transparent transition-all duration-200`}
+                placeholder="Enter your email"
+                autoComplete="email"
               />
             </div>
           </div>
@@ -127,16 +239,44 @@ export default function LoginScreen({ onLogin, onBack }: LoginScreenProps) {
                 id="password"
                 value={password}
                 onChange={(e) => {
-                  setPassword(e.target.value);
-                  if (fieldErrors.password) setFieldErrors({...fieldErrors, password: ''});
+                  setPassword(e.target.value)
+                  if (fieldErrors.password) setFieldErrors({...fieldErrors, password: ''})
                 }}
                 className={`block w-full pl-10 bg-gray-700 border ${fieldErrors.password ? 'border-red-500' : 'border-gray-600'} rounded-lg py-3 text-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:border-transparent transition-all duration-200`}
                 placeholder="Enter your password"
-                autoComplete="current-password"
+                autoComplete={isSignUp ? "new-password" : "current-password"}
               />
             </div>
             <p className="text-xs text-gray-400 mt-1 ml-1">Password must be at least 6 characters</p>
           </div>
+
+          {isSignUp && (
+            <div className="space-y-2">
+              <label htmlFor="confirmPassword" className="flex justify-between text-sm font-medium text-gray-300">
+                <span>Confirm Password</span>
+                {fieldErrors.confirmPassword && (
+                  <span className="text-red-400 text-xs">{fieldErrors.confirmPassword}</span>
+                )}
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Lock className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  value={confirmPassword}
+                  onChange={(e) => {
+                    setConfirmPassword(e.target.value)
+                    if (fieldErrors.confirmPassword) setFieldErrors({...fieldErrors, confirmPassword: ''})
+                  }}
+                  className={`block w-full pl-10 bg-gray-700 border ${fieldErrors.confirmPassword ? 'border-red-500' : 'border-gray-600'} rounded-lg py-3 text-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:border-transparent transition-all duration-200`}
+                  placeholder="Confirm your password"
+                  autoComplete="new-password"
+                />
+              </div>
+            </div>
+          )}
 
           <div className="pt-2">
             <button
@@ -146,7 +286,7 @@ export default function LoginScreen({ onLogin, onBack }: LoginScreenProps) {
             >
               {isSubmitting ? (
                 <>
-                  <span className="opacity-0">LOGIN</span>
+                  <span className="opacity-0">{isSignUp ? 'CREATING ACCOUNT' : 'SIGNING IN'}</span>
                   <span className="absolute inset-0 flex items-center justify-center">
                     <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -154,12 +294,24 @@ export default function LoginScreen({ onLogin, onBack }: LoginScreenProps) {
                     </svg>
                   </span>
                 </>
-              ) : 'LOGIN'}
+              ) : (
+                isSignUp ? 'CREATE ACCOUNT' : 'SIGN IN'
+              )}
             </button>
           </div>
         </form>
 
-        <div className="mt-6">
+        <div className="mt-6 space-y-4">
+          <button
+            onClick={toggleMode}
+            className="w-full text-center text-gray-400 hover:text-gray-300 transition-colors"
+          >
+            {isSignUp 
+              ? 'Already have an account? Sign in' 
+              : "Don't have an account? Sign up"
+            }
+          </button>
+
           <button
             onClick={onBack}
             className="flex items-center justify-center space-x-2 w-full bg-gray-700 hover:bg-gray-600 text-gray-300 font-medium py-2 px-4 rounded-lg transition-all duration-200 border border-gray-600 hover:border-gray-500"
@@ -170,5 +322,5 @@ export default function LoginScreen({ onLogin, onBack }: LoginScreenProps) {
         </div>
       </div>
     </div>
-  );
+  )
 }

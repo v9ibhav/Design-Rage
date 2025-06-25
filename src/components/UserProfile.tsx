@@ -1,48 +1,64 @@
-import React, { useEffect, useState } from 'react';
-import { LogOut, User, Award, BarChart, Calendar } from 'lucide-react';
-import NavigationBar from './NavigationBar';
-import { useUserProfile } from '../hooks/useUserProfile';
+import React, { useEffect, useState } from 'react'
+import { LogOut, User, Award, BarChart, Calendar } from 'lucide-react'
+import NavigationBar from './NavigationBar'
+import { useUserProfile } from '../hooks/useUserProfile'
+import { useAuth } from '../hooks/useAuth'
 
 interface UserProfileProps {
-  username: string;
-  onLogout: () => void;
-  onHome: () => void;
+  onHome: () => void
 }
 
-export default function UserProfile({ username, onLogout, onHome }: UserProfileProps) {
-  const [activeTab, setActiveTab] = useState<'stats' | 'achievements'>('stats');
-  const { userProfile, updateLoginTime } = useUserProfile(username);
+export default function UserProfile({ onHome }: UserProfileProps) {
+  const [activeTab, setActiveTab] = useState<'stats' | 'achievements'>('stats')
+  const { user, signOut, updateLastLogin } = useAuth()
+  const { userProfile, loading, updateLoginTime } = useUserProfile(user.id)
 
   // Update login time when profile is viewed
   useEffect(() => {
-    updateLoginTime();
-  }, [updateLoginTime]);
+    if (user.id) {
+      updateLoginTime()
+      updateLastLogin()
+    }
+  }, [user.id, updateLoginTime, updateLastLogin])
+
+  const handleLogout = async () => {
+    await signOut()
+    onHome()
+  }
 
   // Get user title based on stats
   const getUserTitle = () => {
-    if (userProfile.stats.gamesPlayed === 0) return 'New Designer';
-    if (userProfile.stats.bestScore > 90) return 'Design Superstar';
-    if (userProfile.stats.averageStress < 20) return 'Zen Designer';
-    if (userProfile.stats.averageReputation > 90) return 'Client Favorite';
-    if (userProfile.stats.gamesPlayed > 10) return 'Seasoned Professional';
-    return 'Design Survivor';
-  };
+    if (userProfile.stats.gamesPlayed === 0) return 'New Designer'
+    if (userProfile.stats.bestScore > 90) return 'Design Superstar'
+    if (userProfile.stats.averageStress < 20) return 'Zen Designer'
+    if (userProfile.stats.averageReputation > 90) return 'Client Favorite'
+    if (userProfile.stats.gamesPlayed > 10) return 'Seasoned Professional'
+    return 'Design Survivor'
+  }
 
   // Format date for display
   const formatDate = (dateString: string) => {
     try {
-      const date = new Date(dateString);
+      const date = new Date(dateString)
       return date.toLocaleDateString('en-US', { 
         year: 'numeric', 
         month: 'short', 
         day: 'numeric',
         hour: '2-digit',
         minute: '2-digit'
-      });
+      })
     } catch (e) {
-      return 'Unknown';
+      return 'Unknown'
     }
-  };
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/10 to-gray-900 flex items-center justify-center">
+        <div className="text-xl font-semibold text-gray-300">Loading profile...</div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/10 to-gray-900">
@@ -58,11 +74,11 @@ export default function UserProfile({ username, onLogout, onHome }: UserProfileP
           <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
             <div className="flex items-center space-x-4">
               <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-pink-500 to-blue-500 rounded-full flex items-center justify-center text-white text-xl sm:text-2xl font-bold shadow-lg">
-                {username.charAt(0).toUpperCase()}
+                {user.username.charAt(0).toUpperCase()}
               </div>
               <div>
                 <h2 className="text-xl sm:text-2xl font-bold text-transparent bg-gradient-to-r from-pink-400 to-blue-400 bg-clip-text">
-                  {username}
+                  {user.username}
                 </h2>
                 <div className="text-gray-400">
                   <div className="flex flex-wrap items-center gap-1 sm:gap-2">
@@ -77,7 +93,7 @@ export default function UserProfile({ username, onLogout, onHome }: UserProfileP
               </div>
             </div>
             <button
-              onClick={onLogout}
+              onClick={handleLogout}
               className="flex items-center justify-center space-x-2 px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors border border-pink-500/30 hover:border-pink-400/50 text-gray-200 sm:self-start"
             >
               <LogOut className="w-4 h-4 text-pink-400" />
@@ -111,66 +127,66 @@ export default function UserProfile({ username, onLogout, onHome }: UserProfileP
           {activeTab === 'stats' && (
             <div className="mb-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              <StatCard 
-                title="Games Played" 
-                value={userProfile.stats.gamesPlayed} 
-                icon={<Award className="w-5 h-5 text-pink-400" />} 
-              />
-              <StatCard 
-                title="Best Score" 
-                value={userProfile.stats.gamesPlayed > 0 ? userProfile.stats.bestScore : '-'} 
-                icon={<Award className="w-5 h-5 text-pink-400" />} 
-              />
-              <StatCard 
-                title="Best Title" 
-                value={userProfile.stats.bestTitle || 'None yet'} 
-                icon={<User className="w-5 h-5 text-pink-400" />} 
-              />
-              <StatCard 
-                title="Avg. Reputation" 
-                value={userProfile.stats.gamesPlayed > 0 ? `${userProfile.stats.averageReputation}%` : '-'} 
-                icon={<Award className="w-5 h-5 text-blue-400" />} 
-              />
-              <StatCard 
-                title="Avg. Stress" 
-                value={userProfile.stats.gamesPlayed > 0 ? `${userProfile.stats.averageStress}%` : '-'} 
-                icon={<Award className="w-5 h-5 text-blue-400" />} 
-              />
-            </div>
+                <StatCard 
+                  title="Games Played" 
+                  value={userProfile.stats.gamesPlayed} 
+                  icon={<Award className="w-5 h-5 text-pink-400" />} 
+                />
+                <StatCard 
+                  title="Best Score" 
+                  value={userProfile.stats.gamesPlayed > 0 ? userProfile.stats.bestScore : '-'} 
+                  icon={<Award className="w-5 h-5 text-pink-400" />} 
+                />
+                <StatCard 
+                  title="Best Title" 
+                  value={userProfile.stats.bestTitle || 'None yet'} 
+                  icon={<User className="w-5 h-5 text-pink-400" />} 
+                />
+                <StatCard 
+                  title="Avg. Reputation" 
+                  value={userProfile.stats.gamesPlayed > 0 ? `${userProfile.stats.averageReputation}%` : '-'} 
+                  icon={<Award className="w-5 h-5 text-blue-400" />} 
+                />
+                <StatCard 
+                  title="Avg. Stress" 
+                  value={userProfile.stats.gamesPlayed > 0 ? `${userProfile.stats.averageStress}%` : '-'} 
+                  icon={<Award className="w-5 h-5 text-blue-400" />} 
+                />
+              </div>
 
-            {/* Game History */}
-            {userProfile.stats.gameHistory.length > 0 && (
-              <div className="mt-6">
-                <h4 className="text-lg font-semibold text-gray-200 mb-3">Recent Games</h4>
-                <div className="bg-gray-900/30 rounded-lg border border-gray-700 overflow-hidden">
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-700">
-                      <thead className="bg-gray-800/50">
-                        <tr>
-                          <th className="px-3 py-2 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Date</th>
-                          <th className="px-3 py-2 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Score</th>
-                          <th className="px-3 py-2 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Title</th>
-                          <th className="px-3 py-2 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Stress</th>
-                          <th className="px-3 py-2 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Rep</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-gray-700 bg-gray-800/20">
-                        {userProfile.stats.gameHistory.slice(-5).reverse().map((game, idx) => (
-                          <tr key={idx} className="hover:bg-gray-700/30">
-                            <td className="px-3 py-2 text-xs text-gray-300 whitespace-nowrap">{formatDate(game.completionTime)}</td>
-                            <td className="px-3 py-2 text-xs font-medium text-blue-400">{game.totalScore}</td>
-                            <td className="px-3 py-2 text-xs text-gray-300">{game.title}</td>
-                            <td className="px-3 py-2 text-xs text-red-400">{game.finalStress}%</td>
-                            <td className="px-3 py-2 text-xs text-green-400">{game.finalReputation}%</td>
+              {/* Game History */}
+              {userProfile.stats.gameHistory.length > 0 && (
+                <div className="mt-6">
+                  <h4 className="text-lg font-semibold text-gray-200 mb-3">Recent Games</h4>
+                  <div className="bg-gray-900/30 rounded-lg border border-gray-700 overflow-hidden">
+                    <div className="overflow-x-auto">
+                      <table className="min-w-full divide-y divide-gray-700">
+                        <thead className="bg-gray-800/50">
+                          <tr>
+                            <th className="px-3 py-2 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Date</th>
+                            <th className="px-3 py-2 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Score</th>
+                            <th className="px-3 py-2 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Title</th>
+                            <th className="px-3 py-2 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Stress</th>
+                            <th className="px-3 py-2 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Rep</th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                        </thead>
+                        <tbody className="divide-y divide-gray-700 bg-gray-800/20">
+                          {userProfile.stats.gameHistory.slice(-5).reverse().map((game, idx) => (
+                            <tr key={idx} className="hover:bg-gray-700/30">
+                              <td className="px-3 py-2 text-xs text-gray-300 whitespace-nowrap">{formatDate(game.completionTime)}</td>
+                              <td className="px-3 py-2 text-xs font-medium text-blue-400">{game.totalScore}</td>
+                              <td className="px-3 py-2 text-xs text-gray-300">{game.title}</td>
+                              <td className="px-3 py-2 text-xs text-red-400">{game.finalStress}%</td>
+                              <td className="px-3 py-2 text-xs text-green-400">{game.finalReputation}%</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
           )}
 
           {/* Achievements Section */}
@@ -203,13 +219,13 @@ export default function UserProfile({ username, onLogout, onHome }: UserProfileP
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 interface StatCardProps {
-  title: string;
-  value: string | number;
-  icon: React.ReactNode;
+  title: string
+  value: string | number
+  icon: React.ReactNode
 }
 
 function StatCard({ title, value, icon }: StatCardProps) {
@@ -223,14 +239,14 @@ function StatCard({ title, value, icon }: StatCardProps) {
         {value}
       </p>
     </div>
-  );
+  )
 }
 
 interface AchievementCardProps {
-  title: string;
-  description: string;
-  unlocked: boolean;
-  date?: string;
+  title: string
+  description: string
+  unlocked: boolean
+  date?: string
 }
 
 function AchievementCard({ title, description, unlocked, date }: AchievementCardProps) {
@@ -256,5 +272,5 @@ function AchievementCard({ title, description, unlocked, date }: AchievementCard
         </div>
       </div>
     </div>
-  );
+  )
 }

@@ -1,19 +1,44 @@
-import React, { useState, useEffect } from 'react';
-import NavigationBar from './components/NavigationBar';
-import SplashScreen from './components/SplashScreen';
-import Tutorial from './components/Tutorial';
-import GameScreen from './components/GameScreen';
-import ResultsScreen from './components/ResultsScreen';
-import LoginScreen from './components/LoginScreen';
-import UserProfile from './components/UserProfile';
-import { useGameState } from './hooks/useGameState';
-import { useAuth } from './hooks/useAuth';
-import { useUserProfile } from './hooks/useUserProfile';
-import { shareResults, exportResults } from './utils/sharing';
-import { GameResult } from './types/game';
+import React, { useState, useEffect } from 'react'
+import NavigationBar from './components/NavigationBar'
+import SplashScreen from './components/SplashScreen'
+import Tutorial from './components/Tutorial'
+import GameScreen from './components/GameScreen'
+import ResultsScreen from './components/ResultsScreen'
+import LoginScreen from './components/LoginScreen'
+import UserProfile from './components/UserProfile'
+import { useGameState } from './hooks/useGameState'
+import { useAuth } from './hooks/useAuth'
+import { useUserProfile } from './hooks/useUserProfile'
+import { shareResults, exportResults } from './utils/sharing'
+import { GameResult } from './types/game'
+
+// Simple notification system
+const showNotification = (message: string, type: 'success' | 'error' | 'info' = 'info') => {
+  // Create notification element
+  const notification = document.createElement('div')
+  notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transform transition-all duration-300 ${
+    type === 'success' ? 'bg-green-600' : 
+    type === 'error' ? 'bg-red-600' : 'bg-blue-600'
+  } text-white`
+  notification.textContent = message
+  
+  document.body.appendChild(notification)
+  
+  // Animate in
+  setTimeout(() => {
+    notification.style.transform = 'translateX(0)'
+  }, 100)
+  
+  // Remove after 3 seconds
+  setTimeout(() => {
+    notification.style.transform = 'translateX(100%)'
+    setTimeout(() => {
+      document.body.removeChild(notification)
+    }, 300)
+  }, 3000)
+}
 
 function App() {
-
   const {
     gameState,
     updateGameState,
@@ -23,119 +48,121 @@ function App() {
     completeGame,
     resetGame,
     saveGame
-  } = useGameState();
+  } = useGameState()
 
-  const { user, login, logout, isAuthenticated } = useAuth();
-  const { userProfile, addGameResult } = useUserProfile(user.username);
+  const { user, loading: authLoading, isAuthenticated } = useAuth()
+  const { userProfile, addGameResult } = useUserProfile(user.id)
 
-  const [gameResult, setGameResult] = useState<GameResult | null>(null);
-  const [showAbout, setShowAbout] = useState(false);
-  const [showCredits, setShowCredits] = useState(false);
-  const [showLogin, setShowLogin] = useState(false);
-  const [showProfile, setShowProfile] = useState(false);
+  const [gameResult, setGameResult] = useState<GameResult | null>(null)
+  const [showAbout, setShowAbout] = useState(false)
+  const [showCredits, setShowCredits] = useState(false)
+  const [showLogin, setShowLogin] = useState(false)
+  const [showProfile, setShowProfile] = useState(false)
 
-  const handleGameComplete = () => {
-    const result = completeGame();
-    setGameResult(result);
+  // Redirect to profile after successful login
+  useEffect(() => {
+    if (isAuthenticated && showLogin) {
+      setShowLogin(false)
+      setShowProfile(true)
+    }
+  }, [isAuthenticated, showLogin])
+
+  const handleGameComplete = async () => {
+    const result = completeGame()
+    setGameResult(result)
 
     // If user is logged in, add the result to their profile
-    if (isAuthenticated) {
-      addGameResult(result);
+    if (isAuthenticated && user.id) {
+      try {
+        const achievementsUnlocked = await addGameResult(result)
+        if (achievementsUnlocked) {
+          showNotification('New achievements unlocked! 🏆', 'success')
+        }
+        showNotification('Game results saved to your profile!', 'success')
+      } catch (error) {
+        console.error('Error saving game result:', error)
+        showNotification('Failed to save game results', 'error')
+      }
     }
-  };
+  }
 
   const handleRestart = () => {
-    resetGame();
-    setGameResult(null);
-  };
+    resetGame()
+    setGameResult(null)
+  }
 
   const handleHome = () => {
-    resetGame();
-    setGameResult(null);
-  };
+    resetGame()
+    setGameResult(null)
+  }
 
   const handleSave = () => {
     if (!isAuthenticated) {
-      // Redirect to login if not authenticated
-      setShowLogin(true);
-      return;
+      setShowLogin(true)
+      return
     }
 
-    // Only try to save if the game is in progress
     if (gameState.gamePhase === 'playing') {
-      const success = saveGame();
+      const success = saveGame()
       if (success) {
-        // Show feedback
-        const button = document.querySelector('[title^="Save Progress"]');
-        if (button) {
-          button.classList.add('animate-pulse');
-          setTimeout(() => button.classList.remove('animate-pulse'), 1000);
-        }
-        showNotification('Game progress saved successfully!', 'success');
+        showNotification('Game progress saved successfully!', 'success')
       } else {
-        showNotification('Failed to save game progress', 'error');
+        showNotification('Failed to save game progress', 'error')
       }
     } else if (gameState.gamePhase === 'results') {
-      // If we're on results screen, we want to save the result to profile
       if (gameResult) {
-        addGameResult(gameResult);
-        showNotification('Game results saved to your profile!', 'success');
+        showNotification('Game results are automatically saved to your profile!', 'info')
       }
     } else {
-      showNotification('No game in progress to save', 'info');
+      showNotification('No game in progress to save', 'info')
     }
-  };
+  }
 
   const handleShare = () => {
     if (gameResult) {
-      shareResults(gameResult);
+      shareResults(gameResult)
     }
-  };
+  }
 
   const handleExport = () => {
     if (gameResult) {
-      exportResults(gameResult);
+      exportResults(gameResult)
     }
-  };
+  }
 
   const handleLoginClick = () => {
     if (isAuthenticated) {
-      setShowProfile(true);
+      setShowProfile(true)
     } else {
-      setShowLogin(true);
+      setShowLogin(true)
     }
-  };
-
-  const handleLogin = (username: string, password: string) => {
-    const success = login(username, password);
-    if (success) {
-      setShowLogin(false);
-      setShowProfile(true);
-    }
-    return success;
-  };
-
-  const handleLogout = () => {
-    logout();
-    setShowProfile(false);
-  };
+  }
 
   const handleBackFromLogin = () => {
-    setShowLogin(false);
-  };
+    setShowLogin(false)
+  }
 
   const handleBackFromProfile = () => {
-    setShowProfile(false);
-  };
+    setShowProfile(false)
+  }
+
+  // Show loading screen while auth is initializing
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/10 to-gray-900 flex items-center justify-center">
+        <div className="text-xl font-semibold text-gray-300">Loading...</div>
+      </div>
+    )
+  }
 
   // Login Screen
   if (showLogin) {
-    return <LoginScreen onLogin={handleLogin} onBack={handleBackFromLogin} />;
+    return <LoginScreen onBack={handleBackFromLogin} />
   }
 
   // Profile Screen
   if (showProfile) {
-    return <UserProfile username={user.username} onLogout={handleLogout} onHome={handleBackFromProfile} />;
+    return <UserProfile onHome={handleBackFromProfile} />
   }
 
   // About Modal
@@ -170,7 +197,7 @@ function App() {
           </button>
         </div>
       </div>
-    );
+    )
   }
 
   // Credits Modal
@@ -199,8 +226,8 @@ function App() {
               <ul className="list-disc list-inside space-y-1 text-gray-400">
                 <li>React & TypeScript</li>
                 <li>Tailwind CSS</li>
+                <li>Supabase (Authentication & Database)</li>
                 <li>Lucide React Icons</li>
-                <li>Local Storage API</li>
                 <li>Modern Web APIs</li>
               </ul>
             </div>
@@ -213,7 +240,7 @@ function App() {
           </button>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -266,11 +293,10 @@ function App() {
           onShare={handleShare}
           onExport={handleExport}
           isAuthenticated={isAuthenticated}
-          onLogin={handleLoginClick}
         />
       )}
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
