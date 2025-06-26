@@ -134,19 +134,19 @@ export default function LoginScreen({ onBack }: LoginScreenProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/10 to-gray-900 flex items-center justify-center p-4 md:p-6">
-      <div className="max-w-md w-full bg-gray-800/70 backdrop-blur-sm rounded-2xl p-5 md:p-8 border border-pink-500/20 shadow-lg">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/10 to-gray-900 flex items-center justify-center p-4 sm:p-6">
+      <div className="max-w-sm sm:max-w-md w-full bg-gray-800/70 backdrop-blur-sm rounded-xl sm:rounded-2xl p-5 sm:p-8 border border-pink-500/20 shadow-lg">
         <div className="mb-6 text-center">
-          <h1 className="text-3xl md:text-4xl font-bold mb-2">
+          <h1 className="text-2xl sm:text-4xl font-bold mb-2">
             <span className="text-transparent bg-gradient-to-r from-pink-400 to-blue-400 bg-clip-text">
               Design Rage
             </span>
           </h1>
-          <p className="text-lg text-gray-300 mb-2">
+          <p className="text-base sm:text-lg text-gray-300 mb-2">
             {isSignUp ? 'Create Account' : 'Welcome Back'}
           </p>
           <div className="w-16 h-1 bg-gradient-to-r from-pink-500 to-blue-500 mx-auto rounded-full"></div>
-          <p className="text-sm text-gray-400 mt-3">
+          <p className="text-xs sm:text-sm text-gray-400 mt-3">
             {isSignUp 
               ? 'Join the community and track your design survival skills' 
               : 'Sign in to continue your design survival journey'
@@ -156,19 +156,19 @@ export default function LoginScreen({ onBack }: LoginScreenProps) {
 
         {error && (
           <div className="mb-4 p-3 bg-red-500/20 border border-red-500/30 rounded-lg text-red-300 text-sm flex items-start">
-            <AlertCircle className="w-5 h-5 mr-2 flex-shrink-0 mt-0.5" />
+            <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-2 flex-shrink-0 mt-0.5" />
             <span>{error}</span>
           </div>
         )}
 
         {success && (
           <div className="mb-4 p-3 bg-green-500/20 border border-green-500/30 rounded-lg text-green-300 text-sm flex items-start">
-            <AlertCircle className="w-5 h-5 mr-2 flex-shrink-0 mt-0.5" />
+            <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-2 flex-shrink-0 mt-0.5" />
             <span>{success}</span>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
           {isSignUp && (
             <div className="space-y-2">
               <label htmlFor="username" className="flex justify-between text-sm font-medium text-gray-300">
@@ -179,7 +179,7 @@ export default function LoginScreen({ onBack }: LoginScreenProps) {
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <User className="h-5 w-5 text-gray-400" />
+                  <User className="h-4 h-4 sm:h-5 sm:w-5 text-gray-400" />
                 </div>
                 <input
                   type="text"
@@ -189,7 +189,7 @@ export default function LoginScreen({ onBack }: LoginScreenProps) {
                     setUsername(e.target.value)
                     if (fieldErrors.username) setFieldErrors({...fieldErrors, username: ''})
                   }}
-                  className={`block w-full pl-10 bg-gray-700 border ${fieldErrors.username ? 'border-red-500' : 'border-gray-600'} rounded-lg py-3 text-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:border-transparent transition-all duration-200`}
+                  className={`block w-full pl-9 sm:pl-10 bg-gray-700 border ${fieldErrors.username ? 'border-red-500' : 'border-gray-600'} rounded-lg py-2.5 sm:py-3 text-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:border-transparent transition-all duration-200 text-sm sm:text-base`}
                   placeholder="Choose a username"
                   autoComplete="username"
                 />
@@ -206,7 +206,7 @@ export default function LoginScreen({ onBack }: LoginScreenProps) {
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Mail className="h-5 w-5 text-gray-400" />
+                <Mail className="h-4 h-4 sm:h-5 sm:w-5 text-gray-400" />
               </div>
               <input
                 type="email"
@@ -216,7 +216,7 @@ export default function LoginScreen({ onBack }: LoginScreenProps) {
                   setEmail(e.target.value)
                   if (fieldErrors.email) setFieldErrors({...fieldErrors, email: ''})
                 }}
-                className={`block w-full pl-10 bg-gray-700 border ${fieldErrors.email ? 'border-red-500' : 'border-gray-600'} rounded-lg py-3 text-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:border-transparent transition-all duration-200`}
+                className={`block w-full pl-9 sm:pl-10 bg-gray-700 border ${fieldErrors.email ? 'border-red-500' : 'border-gray-600'} rounded-lg py-2.5 sm:py-3 text-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:border-transparent transition-all duration-200 text-sm sm:text-base`}
                 placeholder="Enter your email"
                 autoComplete="email"
               />
@@ -232,7 +232,7 @@ export default function LoginScreen({ onBack }: LoginScreenProps) {
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Lock className="h-5 w-5 text-gray-400" />
+                <Lock className="h-4 h-4 sm:h-5 sm:w-5 text-gray-400" />
               </div>
               <input
                 type="password"
@@ -242,7 +242,7 @@ export default function LoginScreen({ onBack }: LoginScreenProps) {
                   setPassword(e.target.value)
                   if (fieldErrors.password) setFieldErrors({...fieldErrors, password: ''})
                 }}
-                className={`block w-full pl-10 bg-gray-700 border ${fieldErrors.password ? 'border-red-500' : 'border-gray-600'} rounded-lg py-3 text-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:border-transparent transition-all duration-200`}
+                className={`block w-full pl-9 sm:pl-10 bg-gray-700 border ${fieldErrors.password ? 'border-red-500' : 'border-gray-600'} rounded-lg py-2.5 sm:py-3 text-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:border-transparent transition-all duration-200 text-sm sm:text-base`}
                 placeholder="Enter your password"
                 autoComplete={isSignUp ? "new-password" : "current-password"}
               />
@@ -260,7 +260,7 @@ export default function LoginScreen({ onBack }: LoginScreenProps) {
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-400" />
+                  <Lock className="h-4 h-4 sm:h-5 sm:w-5 text-gray-400" />
                 </div>
                 <input
                   type="password"
@@ -270,7 +270,7 @@ export default function LoginScreen({ onBack }: LoginScreenProps) {
                     setConfirmPassword(e.target.value)
                     if (fieldErrors.confirmPassword) setFieldErrors({...fieldErrors, confirmPassword: ''})
                   }}
-                  className={`block w-full pl-10 bg-gray-700 border ${fieldErrors.confirmPassword ? 'border-red-500' : 'border-gray-600'} rounded-lg py-3 text-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:border-transparent transition-all duration-200`}
+                  className={`block w-full pl-9 sm:pl-10 bg-gray-700 border ${fieldErrors.confirmPassword ? 'border-red-500' : 'border-gray-600'} rounded-lg py-2.5 sm:py-3 text-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:border-transparent transition-all duration-200 text-sm sm:text-base`}
                   placeholder="Confirm your password"
                   autoComplete="new-password"
                 />
@@ -282,7 +282,7 @@ export default function LoginScreen({ onBack }: LoginScreenProps) {
             <button
               type="submit"
               disabled={isSubmitting}
-              className={`w-full bg-gradient-to-r from-pink-600 to-blue-600 hover:from-pink-500 hover:to-blue-500 text-white font-bold py-3 px-6 rounded-lg transform transition-all duration-200 ${!isSubmitting && 'hover:scale-[1.02]'} shadow-lg hover:shadow-pink-500/25 border border-pink-500/30 relative ${isSubmitting && 'opacity-90'}`}
+              className={`w-full bg-gradient-to-r from-pink-600 to-blue-600 hover:from-pink-500 hover:to-blue-500 active:from-pink-700 active:to-blue-700 text-white font-bold py-3 px-6 rounded-lg transform transition-all duration-200 ${!isSubmitting && 'hover:scale-[1.02] active:scale-95'} shadow-lg hover:shadow-pink-500/25 border border-pink-500/30 relative ${isSubmitting && 'opacity-90'} touch-manipulation`}
             >
               {isSubmitting ? (
                 <>
@@ -304,7 +304,7 @@ export default function LoginScreen({ onBack }: LoginScreenProps) {
         <div className="mt-6 space-y-4">
           <button
             onClick={toggleMode}
-            className="w-full text-center text-gray-400 hover:text-gray-300 transition-colors"
+            className="w-full text-center text-gray-400 hover:text-gray-300 transition-colors text-sm sm:text-base touch-manipulation"
           >
             {isSignUp 
               ? 'Already have an account? Sign in' 
@@ -314,10 +314,10 @@ export default function LoginScreen({ onBack }: LoginScreenProps) {
 
           <button
             onClick={onBack}
-            className="flex items-center justify-center space-x-2 w-full bg-gray-700 hover:bg-gray-600 text-gray-300 font-medium py-2 px-4 rounded-lg transition-all duration-200 border border-gray-600 hover:border-gray-500"
+            className="flex items-center justify-center space-x-2 w-full bg-gray-700 hover:bg-gray-600 active:bg-gray-800 text-gray-300 font-medium py-2 px-4 rounded-lg transition-all duration-200 border border-gray-600 hover:border-gray-500 touch-manipulation"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span>Back to Main Screen</span>
+            <span className="text-sm sm:text-base">Back to Main Screen</span>
           </button>
         </div>
       </div>

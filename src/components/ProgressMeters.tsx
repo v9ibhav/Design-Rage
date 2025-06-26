@@ -39,32 +39,32 @@ export default function ProgressMeters({ stress, reputation, round }: ProgressMe
   };
 
   return (
-    <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-4 border border-gray-700">
+    <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg sm:rounded-xl p-3 sm:p-4 border border-gray-700">
       {/* Round Counter */}
-      <div className="mb-6">
-        <div className="flex items-center justify-center mb-2">
-          <span className="text-lg font-bold text-transparent bg-gradient-to-r from-pink-400 to-blue-400 bg-clip-text">
+      <div className="mb-4 sm:mb-6">
+        <div className="flex items-center justify-center mb-1 sm:mb-2">
+          <span className="text-base sm:text-lg font-bold text-transparent bg-gradient-to-r from-pink-400 to-blue-400 bg-clip-text">
             Question {round}
           </span>
         </div>
-        <div className="text-center text-sm text-gray-400">
+        <div className="text-center text-xs sm:text-sm text-gray-400">
           Keep going as long as you can survive!
         </div>
       </div>
 
       {/* Stress Meter */}
-      <div className="mb-4">
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center space-x-2">
-            <Zap className="w-4 h-4 text-red-400" />
-            <span className="text-sm font-medium text-gray-300">Stress</span>
-            <span className="text-lg">{getStressEmoji(stress)}</span>
+      <div className="mb-3 sm:mb-4">
+        <div className="flex items-center justify-between mb-1 sm:mb-2">
+          <div className="flex items-center space-x-1 sm:space-x-2">
+            <Zap className="w-3 h-3 sm:w-4 sm:h-4 text-red-400" />
+            <span className="text-xs sm:text-sm font-medium text-gray-300">Stress</span>
+            <span className="text-sm sm:text-lg">{getStressEmoji(stress)}</span>
           </div>
-          <span className="text-sm text-gray-400">{Math.round(stress)}%</span>
+          <span className="text-xs sm:text-sm text-gray-400">{Math.round(stress)}%</span>
         </div>
-        <div className="w-full bg-gray-700 rounded-full h-3 overflow-hidden">
+        <div className="w-full bg-gray-700 rounded-full h-2 sm:h-3 overflow-hidden">
           <div 
-            className={`bg-gradient-to-r ${getStressColor(stress)} h-3 rounded-full transition-all duration-700 ${
+            className={`bg-gradient-to-r ${getStressColor(stress)} h-2 sm:h-3 rounded-full transition-all duration-700 ${
               stress > 90 ? 'animate-pulse' : ''
             }`}
             style={{ width: `${Math.min(stress, 100)}%` }}
@@ -74,17 +74,17 @@ export default function ProgressMeters({ stress, reputation, round }: ProgressMe
 
       {/* Reputation Meter */}
       <div>
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center space-x-2">
-            <Star className="w-4 h-4 text-yellow-400" />
-            <span className="text-sm font-medium text-gray-300">Reputation</span>
-            <span className="text-lg">{getReputationEmoji(reputation)}</span>
+        <div className="flex items-center justify-between mb-1 sm:mb-2">
+          <div className="flex items-center space-x-1 sm:space-x-2">
+            <Star className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-400" />
+            <span className="text-xs sm:text-sm font-medium text-gray-300">Reputation</span>
+            <span className="text-sm sm:text-lg">{getReputationEmoji(reputation)}</span>
           </div>
-          <span className="text-sm text-gray-400">{Math.round(reputation)}%</span>
+          <span className="text-xs sm:text-sm text-gray-400">{Math.round(reputation)}%</span>
         </div>
-        <div className="w-full bg-gray-700 rounded-full h-3 overflow-hidden">
+        <div className="w-full bg-gray-700 rounded-full h-2 sm:h-3 overflow-hidden">
           <div 
-            className={`bg-gradient-to-r ${getReputationColor(reputation)} h-3 rounded-full transition-all duration-700`}
+            className={`bg-gradient-to-r ${getReputationColor(reputation)} h-2 sm:h-3 rounded-full transition-all duration-700`}
             style={{ width: `${Math.max(0, Math.min(reputation, 100))}%` }}
           />
         </div>

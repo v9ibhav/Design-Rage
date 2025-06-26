@@ -110,7 +110,7 @@ export default function GameScreen({ gameState, onUpdateGameState, onGameComplet
       : (isPositive ? 'text-green-400' : 'text-red-400');
     
     return (
-      <span className={`text-sm font-medium ${color}`}>
+      <span className={`text-xs sm:text-sm font-medium ${color}`}>
         {isPositive ? '+' : ''}{impact}
       </span>
     );
@@ -118,25 +118,25 @@ export default function GameScreen({ gameState, onUpdateGameState, onGameComplet
 
   if (gameState.scenariosLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-xl font-semibold text-gray-700">Loading scenarios...</div>
+      <div className="flex items-center justify-center min-h-screen px-4">
+        <div className="text-lg sm:text-xl font-semibold text-gray-700 text-center">Loading scenarios...</div>
       </div>
     );
   }
 
   if (!currentScenario) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-xl font-semibold text-red-600">Failed to load scenario. Please try again.</div>
+      <div className="flex items-center justify-center min-h-screen px-4">
+        <div className="text-lg sm:text-xl font-semibold text-red-600 text-center">Failed to load scenario. Please try again.</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/10 to-gray-900 pt-20 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/10 to-gray-900 pt-16 sm:pt-20 p-3 sm:p-4">
       <div className="max-w-4xl mx-auto">
         {/* Progress Meters */}
-        <div className="mb-8">
+        <div className="mb-4 sm:mb-8">
           <ProgressMeters 
             stress={gameState.stress}
             reputation={gameState.reputation}
@@ -145,25 +145,25 @@ export default function GameScreen({ gameState, onUpdateGameState, onGameComplet
         </div>
 
         {/* End Game Button */}
-        <div className="mb-6 flex justify-center">
+        <div className="mb-4 sm:mb-6 flex justify-center">
           <button
             onClick={handleEndGame}
-            className="flex items-center space-x-2 px-6 py-3 rounded-lg bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white font-medium transition-all duration-200 transform hover:scale-105 border border-red-500/30"
+            className="flex items-center space-x-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 active:from-red-700 active:to-orange-700 text-white font-medium transition-all duration-200 transform hover:scale-105 active:scale-95 border border-red-500/30 touch-manipulation text-sm sm:text-base"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4 sm:w-5 sm:h-5" />
             <span>End Game & See Results</span>
           </button>
         </div>
 
         {/* Scenario Card */}
-        <div className="bg-gray-800/70 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 shadow-2xl mb-8">
-          <div className="text-center mb-8">
-            <div className="inline-block bg-gradient-to-r from-pink-500 to-blue-500 text-transparent bg-clip-text text-sm font-bold mb-2">
+        <div className="bg-gray-800/70 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-8 border border-gray-700 shadow-2xl mb-4 sm:mb-8">
+          <div className="text-center mb-6 sm:mb-8">
+            <div className="inline-block bg-gradient-to-r from-pink-500 to-blue-500 text-transparent bg-clip-text text-xs sm:text-sm font-bold mb-2">
               QUESTION {gameState.currentRound}
             </div>
-            <h2 className="text-lg text-gray-400 mb-4">{currentScenario.context}</h2>
-            <div className="bg-gray-900/50 rounded-lg p-6 border-l-4 border-pink-500">
-              <blockquote className="text-xl text-gray-200 italic leading-relaxed">
+            <h2 className="text-sm sm:text-lg text-gray-400 mb-3 sm:mb-4 px-2">{currentScenario.context}</h2>
+            <div className="bg-gray-900/50 rounded-lg p-4 sm:p-6 border-l-4 border-pink-500">
+              <blockquote className="text-base sm:text-xl text-gray-200 italic leading-relaxed">
                 "{currentScenario.clientQuote}"
               </blockquote>
             </div>
@@ -171,28 +171,28 @@ export default function GameScreen({ gameState, onUpdateGameState, onGameComplet
 
           {/* Response Options */}
           {!showFeedback && (
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-300 text-center mb-6">
+            <div className="space-y-3 sm:space-y-4">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-300 text-center mb-4 sm:mb-6">
                 How do you respond? 🤔
               </h3>
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="grid gap-3 sm:gap-4">
                 {currentScenario.responses.map((response, index) => (
                   <button
                     key={index}
                     onClick={() => handleResponseClick(response)}
-                    className={`group relative p-4 rounded-lg border-2 transition-all duration-200 transform hover:scale-105 text-left ${
+                    className={`group relative p-3 sm:p-4 rounded-lg border-2 transition-all duration-200 transform hover:scale-[1.02] active:scale-95 text-left touch-manipulation ${
                       response.type === 'professional' 
-                        ? 'border-green-500/30 hover:border-green-400/50 bg-green-900/20 hover:bg-green-900/30'
+                        ? 'border-green-500/30 hover:border-green-400/50 bg-green-900/20 hover:bg-green-900/30 active:bg-green-900/40'
                         : response.type === 'witty'
-                        ? 'border-blue-500/30 hover:border-blue-400/50 bg-blue-900/20 hover:bg-blue-900/30'
-                        : 'border-red-500/30 hover:border-red-400/50 bg-red-900/20 hover:bg-red-900/30'
+                        ? 'border-blue-500/30 hover:border-blue-400/50 bg-blue-900/20 hover:bg-blue-900/30 active:bg-blue-900/40'
+                        : 'border-red-500/30 hover:border-red-400/50 bg-red-900/20 hover:bg-red-900/30 active:bg-red-900/40'
                     } ${responseAnimation}`}
                   >
-                    <div className="flex items-start space-x-3">
-                      <span className="text-2xl flex-shrink-0">{response.emoji}</span>
-                      <div className="flex-1">
-                        <p className="text-gray-200 mb-3 leading-relaxed">{response.text}</p>
-                        <div className="flex items-center space-x-4 text-xs">
+                    <div className="flex items-start space-x-2 sm:space-x-3">
+                      <span className="text-xl sm:text-2xl flex-shrink-0">{response.emoji}</span>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm sm:text-base text-gray-200 mb-2 sm:mb-3 leading-relaxed break-words">{response.text}</p>
+                        <div className="flex items-center space-x-3 sm:space-x-4 text-xs">
                           <div className="flex items-center space-x-1">
                             <span className="text-gray-400">Stress:</span>
                             {getImpactDisplay(response.stressImpact, 'stress')}
@@ -212,11 +212,11 @@ export default function GameScreen({ gameState, onUpdateGameState, onGameComplet
 
           {/* Feedback Display */}
           {showFeedback && selectedResponse && (
-            <div className="text-center space-y-6">
-              <div className="text-4xl animate-bounce">{selectedResponse.emoji}</div>
+            <div className="text-center space-y-4 sm:space-y-6">
+              <div className="text-3xl sm:text-4xl animate-bounce">{selectedResponse.emoji}</div>
               <div className="space-y-2">
-                <p className="text-xl text-gray-300">You chose the {selectedResponse.type} approach!</p>
-                <div className="flex items-center justify-center space-x-6 text-sm">
+                <p className="text-lg sm:text-xl text-gray-300">You chose the {selectedResponse.type} approach!</p>
+                <div className="flex items-center justify-center space-x-4 sm:space-x-6 text-xs sm:text-sm">
                   <div className="flex items-center space-x-2">
                     <span className="text-gray-400">Stress:</span>
                     {getImpactDisplay(selectedResponse.stressImpact, 'stress')}
@@ -227,7 +227,7 @@ export default function GameScreen({ gameState, onUpdateGameState, onGameComplet
                   </div>
                 </div>
               </div>
-              <div className="text-gray-400">
+              <div className="text-sm sm:text-base text-gray-400">
                 Preparing next scenario...
               </div>
             </div>

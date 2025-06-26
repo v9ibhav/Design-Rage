@@ -16,10 +16,10 @@ import { GameResult } from './types/game'
 const showNotification = (message: string, type: 'success' | 'error' | 'info' = 'info') => {
   // Create notification element
   const notification = document.createElement('div')
-  notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transform transition-all duration-300 ${
+  notification.className = `fixed top-4 right-4 z-50 p-3 sm:p-4 rounded-lg shadow-lg transform transition-all duration-300 ${
     type === 'success' ? 'bg-green-600' : 
     type === 'error' ? 'bg-red-600' : 'bg-blue-600'
-  } text-white`
+  } text-white text-sm sm:text-base max-w-xs sm:max-w-sm`
   notification.textContent = message
   
   document.body.appendChild(notification)
@@ -33,7 +33,9 @@ const showNotification = (message: string, type: 'success' | 'error' | 'info' = 
   setTimeout(() => {
     notification.style.transform = 'translateX(100%)'
     setTimeout(() => {
-      document.body.removeChild(notification)
+      if (document.body.contains(notification)) {
+        document.body.removeChild(notification)
+      }
     }, 300)
   }, 3000)
 }
@@ -150,7 +152,7 @@ function App() {
   if (authLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/10 to-gray-900 flex items-center justify-center">
-        <div className="text-xl font-semibold text-gray-300">Loading...</div>
+        <div className="text-lg sm:text-xl font-semibold text-gray-300">Loading...</div>
       </div>
     )
   }
@@ -168,15 +170,15 @@ function App() {
   // About Modal
   if (showAbout) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/10 to-gray-900 flex items-center justify-center p-4">
-        <div className="max-w-2xl bg-gray-800/70 backdrop-blur-sm rounded-2xl p-8 border border-gray-700">
-          <h2 className="text-3xl font-bold text-transparent bg-gradient-to-r from-pink-400 to-blue-400 bg-clip-text mb-6">
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/10 to-gray-900 flex items-center justify-center p-4 sm:p-6">
+        <div className="max-w-lg sm:max-w-2xl bg-gray-800/70 backdrop-blur-sm rounded-xl sm:rounded-2xl p-6 sm:p-8 border border-gray-700">
+          <h2 className="text-2xl sm:text-3xl font-bold text-transparent bg-gradient-to-r from-pink-400 to-blue-400 bg-clip-text mb-4 sm:mb-6">
             About Design Rage
           </h2>
-          <div className="space-y-4 text-gray-300 leading-relaxed">
+          <div className="space-y-3 sm:space-y-4 text-gray-300 leading-relaxed text-sm sm:text-base">
             <p>
               Design Rage is a satirical web game that puts you in the shoes of a designer
-              navigating the chaotic world of client feedback. Can you survive 10 rounds
+              navigating the chaotic world of client feedback. Can you survive unlimited rounds
               of impossible requests while maintaining your sanity AND reputation?
             </p>
             <p>
@@ -191,7 +193,7 @@ function App() {
           </div>
           <button
             onClick={() => setShowAbout(false)}
-            className="mt-6 bg-gradient-to-r from-pink-600 to-blue-600 hover:from-pink-500 hover:to-blue-500 text-white font-bold py-3 px-6 rounded-lg transition-all duration-200"
+            className="mt-6 bg-gradient-to-r from-pink-600 to-blue-600 hover:from-pink-500 hover:to-blue-500 active:from-pink-700 active:to-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-200 touch-manipulation"
           >
             Back to Game
           </button>
@@ -203,27 +205,27 @@ function App() {
   // Credits Modal
   if (showCredits) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/10 to-gray-900 flex items-center justify-center p-4">
-        <div className="max-w-2xl bg-gray-800/70 backdrop-blur-sm rounded-2xl p-8 border border-gray-700">
-          <h2 className="text-3xl font-bold text-transparent bg-gradient-to-r from-pink-400 to-blue-400 bg-clip-text mb-6">
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/10 to-gray-900 flex items-center justify-center p-4 sm:p-6">
+        <div className="max-w-lg sm:max-w-2xl bg-gray-800/70 backdrop-blur-sm rounded-xl sm:rounded-2xl p-6 sm:p-8 border border-gray-700">
+          <h2 className="text-2xl sm:text-3xl font-bold text-transparent bg-gradient-to-r from-pink-400 to-blue-400 bg-clip-text mb-4 sm:mb-6">
             Credits
           </h2>
-          <div className="space-y-6 text-gray-300">
+          <div className="space-y-4 sm:space-y-6 text-gray-300 text-sm sm:text-base">
             <div>
-              <h3 className="text-xl font-semibold text-white mb-2">🎮 Game Design & Development</h3>
+              <h3 className="text-lg sm:text-xl font-semibold text-white mb-2">🎮 Game Design & Development</h3>
               <p>Created by Bolt AI - Your AI-powered development assistant</p>
             </div>
             <div>
-              <h3 className="text-xl font-semibold text-white mb-2">🎨 Design Inspiration</h3>
+              <h3 className="text-lg sm:text-xl font-semibold text-white mb-2">🎨 Design Inspiration</h3>
               <p>Pixel-punk aesthetic inspired by retro gaming culture and cyberpunk design principles</p>
             </div>
             <div>
-              <h3 className="text-xl font-semibold text-white mb-2">💡 Special Thanks</h3>
+              <h3 className="text-lg sm:text-xl font-semibold text-white mb-2">💡 Special Thanks</h3>
               <p>To all the designers who have survived impossible client feedback and lived to tell the tale</p>
             </div>
             <div>
-              <h3 className="text-xl font-semibold text-white mb-2">🛠️ Built With</h3>
-              <ul className="list-disc list-inside space-y-1 text-gray-400">
+              <h3 className="text-lg sm:text-xl font-semibold text-white mb-2">🛠️ Built With</h3>
+              <ul className="list-disc list-inside space-y-1 text-gray-400 text-sm">
                 <li>React & TypeScript</li>
                 <li>Tailwind CSS</li>
                 <li>Supabase (Authentication & Database)</li>
@@ -234,7 +236,7 @@ function App() {
           </div>
           <button
             onClick={() => setShowCredits(false)}
-            className="mt-6 bg-gradient-to-r from-pink-600 to-blue-600 hover:from-pink-500 hover:to-blue-500 text-white font-bold py-3 px-6 rounded-lg transition-all duration-200"
+            className="mt-6 bg-gradient-to-r from-pink-600 to-blue-600 hover:from-pink-500 hover:to-blue-500 active:from-pink-700 active:to-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-200 touch-manipulation"
           >
             Back to Game
           </button>
