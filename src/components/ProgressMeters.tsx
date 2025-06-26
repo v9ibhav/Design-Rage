@@ -5,10 +5,9 @@ interface ProgressMetersProps {
   stress: number;
   reputation: number;
   round: number;
-  totalRounds: number;
 }
 
-export default function ProgressMeters({ stress, reputation, round, totalRounds }: ProgressMetersProps) {
+export default function ProgressMeters({ stress, reputation, round }: ProgressMetersProps) {
   const getStressColor = (stress: number) => {
     if (stress < 30) return 'from-green-500 to-green-400';
     if (stress < 60) return 'from-yellow-500 to-yellow-400';
@@ -41,17 +40,15 @@ export default function ProgressMeters({ stress, reputation, round, totalRounds 
 
   return (
     <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-4 border border-gray-700">
-      {/* Round Progress */}
+      {/* Round Counter */}
       <div className="mb-6">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium text-gray-300">Progress</span>
-          <span className="text-sm text-gray-400">{round}/{totalRounds}</span>
+        <div className="flex items-center justify-center mb-2">
+          <span className="text-lg font-bold text-transparent bg-gradient-to-r from-pink-400 to-blue-400 bg-clip-text">
+            Question {round}
+          </span>
         </div>
-        <div className="w-full bg-gray-700 rounded-full h-2">
-          <div 
-            className="bg-gradient-to-r from-pink-500 to-blue-500 h-2 rounded-full transition-all duration-500"
-            style={{ width: `${(round / totalRounds) * 100}%` }}
-          />
+        <div className="text-center text-sm text-gray-400">
+          Keep going as long as you can survive!
         </div>
       </div>
 

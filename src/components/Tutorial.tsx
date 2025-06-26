@@ -12,7 +12,7 @@ export default function Tutorial({ onComplete, onSkip }: TutorialProps) {
   const tutorialSteps = [
     {
       title: "Welcome to Design Rage! 🎮",
-      content: "You're a designer navigating the chaotic world of client feedback. Your goal? Survive 10 rounds without losing your sanity or reputation!",
+      content: "You're a designer navigating the chaotic world of client feedback. Your goal? Survive as long as you can without losing your sanity or reputation!",
       emoji: "🎯"
     },
     {
@@ -22,7 +22,7 @@ export default function Tutorial({ onComplete, onSkip }: TutorialProps) {
     },
     {
       title: "Choose Your Response Style 💬",
-      content: "Each client comment has 4 response options: Professional (😊), Witty (🤖), or Sarcastic (😈). Each affects your meters differently!",
+      content: "Each client comment has response options: Professional (😊), Witty (🤖), or Sarcastic (😈). Each affects your meters differently!",
       emoji: "🎭"
     },
     {
@@ -31,8 +31,8 @@ export default function Tutorial({ onComplete, onSkip }: TutorialProps) {
       emoji: "🌪️"
     },
     {
-      title: "Ready to Begin? 🚀",
-      content: "Remember: There's no perfect response, only survival. Your designer title depends on how well you balance sanity and success!",
+      title: "Unlimited Survival Mode! 🚀",
+      content: "There's no set end - keep going as long as you can survive! Use the 'End Game' button whenever you want to see your final results and designer title.",
       emoji: "🏆"
     }
   ];

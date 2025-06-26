@@ -42,4 +42,5 @@ export interface GameResult {
   title: string;
   chaosEventsCount: number;
   completionTime: string;
+  roundsCompleted?: number;
 }

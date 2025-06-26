@@ -30,18 +30,18 @@ export default function ResultsScreen({ result, onRestart, onShare, onExport, is
     return "😐";
   };
 
-  const getResultMessage = (stress: number, reputation: number, score: number) => {
-    if (stress > 90) return "You survived, but at what cost? Consider therapy... or a vacation.";
-    if (reputation > 90) return "Clients love you! You're the designer everyone wants to hire.";
-    if (score > 80) return "Masterful balance! You've cracked the code of client relations.";
-    if (stress < 20 && reputation > 70) return "Impossibly calm under pressure. Teach us your ways!";
-    if (reputation < 30) return "Well... you're honest. Maybe too honest. RIP your Yelp reviews.";
-    return "You made it through another day in design hell. That's something!";
+  const getResultMessage = (stress: number, reputation: number, score: number, rounds: number) => {
+    if (stress > 90) return `You survived ${rounds} rounds, but at what cost? Consider therapy... or a vacation.`;
+    if (reputation > 90) return `Amazing! You survived ${rounds} rounds and clients love you! You're the designer everyone wants to hire.`;
+    if (score > 80) return `Masterful balance through ${rounds} rounds! You've cracked the code of client relations.`;
+    if (stress < 20 && reputation > 70) return `Impossibly calm through ${rounds} rounds of chaos. Teach us your ways!`;
+    if (reputation < 30) return `Well... you survived ${rounds} rounds with brutal honesty. Maybe too honest. RIP your Yelp reviews.`;
+    return `You made it through ${rounds} rounds of design hell. That's something!`;
   };
 
   const title = getDesignerTitle(result.finalStress, result.finalReputation, result.totalScore);
   const emoji = getResultEmoji(result.finalStress, result.finalReputation);
-  const message = getResultMessage(result.finalStress, result.finalReputation, result.totalScore);
+  const message = getResultMessage(result.finalStress, result.finalReputation, result.totalScore, result.roundsCompleted || 0);
 
   return (
     <>
@@ -62,7 +62,7 @@ export default function ResultsScreen({ result, onRestart, onShare, onExport, is
                 <h1 className="text-3xl font-bold text-transparent bg-gradient-to-r from-pink-400 to-blue-400 bg-clip-text mb-2">
                   Congratulations!
                 </h1>
-                <p className="text-xl text-gray-400">You survived all 10 rounds!</p>
+                <p className="text-xl text-gray-400">You survived {result.roundsCompleted || 0} rounds!</p>
               </div>
 
               {/* Designer Title */}
@@ -167,8 +167,8 @@ export default function ResultsScreen({ result, onRestart, onShare, onExport, is
             </h3>
             <div className="grid grid-cols-2 gap-4 text-center">
               <div className="bg-gray-900/30 p-3 rounded-lg border border-pink-500/20">
-                <div className="text-xl sm:text-2xl font-bold text-pink-400 mb-1">10</div>
-                <div className="text-xs sm:text-sm text-gray-400">Client Comments Survived</div>
+                <div className="text-xl sm:text-2xl font-bold text-pink-400 mb-1">{result.roundsCompleted || 0}</div>
+                <div className="text-xs sm:text-sm text-gray-400">Questions Survived</div>
               </div>
               <div className="bg-gray-900/30 p-3 rounded-lg border border-blue-500/20">
                 <div className="text-xl sm:text-2xl font-bold text-blue-400 mb-1">

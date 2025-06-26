@@ -93,6 +93,7 @@ export function useGameState() {
       totalScore: gameState.score,
       title: getDesignerTitle(gameState.stress, gameState.reputation, gameState.score),
       chaosEventsCount: gameState.chaosEventsCount,
+      roundsCompleted: gameState.currentRound - 1, // Subtract 1 since we haven't completed the current round
       completionTime: new Date().toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'long',

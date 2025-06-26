@@ -3,6 +3,7 @@ import { chaosEvents } from '../data/scenarios';
 import { GameState, Response, ChaosEvent, Scenario } from '../types/game';
 import ProgressMeters from './ProgressMeters';
 import ChaosEventModal from './ChaosEventModal';
+import { X } from 'lucide-react';
 
 interface GameScreenProps {
   gameState: GameState;
@@ -20,7 +21,9 @@ export default function GameScreen({ gameState, onUpdateGameState, onGameComplet
 
   useEffect(() => {
     if (gameState.availableScenarios.length > 0) {
-      const scenario = gameState.availableScenarios[gameState.currentRound - 1];
+      // Cycle through scenarios, repeating if necessary
+      const scenarioIndex = (gameState.currentRound - 1) % gameState.availableScenarios.length;
+      const scenario = gameState.availableScenarios[scenarioIndex];
       setCurrentScenario(scenario);
     }
   }, [gameState.currentRound, gameState.availableScenarios]);
@@ -63,22 +66,18 @@ export default function GameScreen({ gameState, onUpdateGameState, onGameComplet
     
     // Auto-advance to next round
     setTimeout(() => {
-      if (gameState.currentRound >= 10) {
-        onGameComplete();
-      } else {
-        const nextState: GameState = {
-          ...gameState,
-          currentRound: gameState.currentRound + 1,
-          stress: newStress,
-          reputation: newReputation,
-          score: gameState.score + scoreIncrease,
-          completedScenarios: [...gameState.completedScenarios, currentScenario.id],
-          chaosEventTriggered: false
-        };
-        onUpdateGameState(nextState);
-        setShowFeedback(false);
-        setSelectedResponse(null);
-      }
+      const nextState: GameState = {
+        ...gameState,
+        currentRound: gameState.currentRound + 1,
+        stress: newStress,
+        reputation: newReputation,
+        score: gameState.score + scoreIncrease,
+        completedScenarios: [...gameState.completedScenarios, currentScenario.id],
+        chaosEventTriggered: false
+      };
+      onUpdateGameState(nextState);
+      setShowFeedback(false);
+      setSelectedResponse(null);
     }, 3000);
   };
 
@@ -98,6 +97,10 @@ export default function GameScreen({ gameState, onUpdateGameState, onGameComplet
       onUpdateGameState(newState);
     }
     setCurrentChaosEvent(null);
+  };
+
+  const handleEndGame = () => {
+    onGameComplete();
   };
 
   const getImpactDisplay = (impact: number, type: 'stress' | 'reputation') => {
@@ -138,15 +141,25 @@ export default function GameScreen({ gameState, onUpdateGameState, onGameComplet
             stress={gameState.stress}
             reputation={gameState.reputation}
             round={gameState.currentRound}
-            totalRounds={10}
           />
+        </div>
+
+        {/* End Game Button */}
+        <div className="mb-6 flex justify-center">
+          <button
+            onClick={handleEndGame}
+            className="flex items-center space-x-2 px-6 py-3 rounded-lg bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white font-medium transition-all duration-200 transform hover:scale-105 border border-red-500/30"
+          >
+            <X className="w-5 h-5" />
+            <span>End Game & See Results</span>
+          </button>
         </div>
 
         {/* Scenario Card */}
         <div className="bg-gray-800/70 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 shadow-2xl mb-8">
           <div className="text-center mb-8">
             <div className="inline-block bg-gradient-to-r from-pink-500 to-blue-500 text-transparent bg-clip-text text-sm font-bold mb-2">
-              ROUND {gameState.currentRound} OF 10
+              QUESTION {gameState.currentRound}
             </div>
             <h2 className="text-lg text-gray-400 mb-4">{currentScenario.context}</h2>
             <div className="bg-gray-900/50 rounded-lg p-6 border-l-4 border-pink-500">
@@ -215,7 +228,7 @@ export default function GameScreen({ gameState, onUpdateGameState, onGameComplet
                 </div>
               </div>
               <div className="text-gray-400">
-                {gameState.currentRound < 10 ? 'Preparing next scenario...' : 'Calculating final results...'}
+                Preparing next scenario...
               </div>
             </div>
           )}
