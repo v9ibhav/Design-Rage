@@ -19,7 +19,7 @@ const showNotification = (message: string, type: 'success' | 'error' | 'info' = 
   notification.className = `fixed top-4 right-4 z-50 p-3 sm:p-4 rounded-lg shadow-lg transform transition-all duration-300 ${
     type === 'success' ? 'bg-green-600' : 
     type === 'error' ? 'bg-red-600' : 'bg-blue-600'
-  } text-white text-sm sm:text-base max-w-xs sm:max-w-sm`
+  } text-white text-sm sm:text-base max-w-xs sm:max-w-sm game-cursor`
   notification.textContent = message
   
   document.body.appendChild(notification)
@@ -151,7 +151,7 @@ function App() {
   // Show loading screen while auth is initializing
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/10 to-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/10 to-gray-900 flex items-center justify-center game-cursor">
         <div className="text-lg sm:text-xl font-semibold text-gray-300">Loading...</div>
       </div>
     )
@@ -170,7 +170,7 @@ function App() {
   // About Modal
   if (showAbout) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/10 to-gray-900 flex items-center justify-center p-4 sm:p-6">
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/10 to-gray-900 flex items-center justify-center p-4 sm:p-6 game-cursor">
         <div className="max-w-lg sm:max-w-2xl bg-gray-800/70 backdrop-blur-sm rounded-xl sm:rounded-2xl p-6 sm:p-8 border border-gray-700">
           <h2 className="text-2xl sm:text-3xl font-bold text-transparent bg-gradient-to-r from-pink-400 to-blue-400 bg-clip-text mb-4 sm:mb-6">
             About Design Rage
@@ -205,7 +205,7 @@ function App() {
   // Credits Modal
   if (showCredits) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/10 to-gray-900 flex items-center justify-center p-4 sm:p-6">
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/10 to-gray-900 flex items-center justify-center p-4 sm:p-6 game-cursor">
         <div className="max-w-lg sm:max-w-2xl bg-gray-800/70 backdrop-blur-sm rounded-xl sm:rounded-2xl p-6 sm:p-8 border border-gray-700">
           <h2 className="text-2xl sm:text-3xl font-bold text-transparent bg-gradient-to-r from-pink-400 to-blue-400 bg-clip-text mb-4 sm:mb-6">
             Credits
@@ -246,7 +246,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-gray-900 game-cursor">
       {/* Navigation Bar - only show during gameplay */}
       {gameState.gamePhase !== 'splash' && (
         <NavigationBar

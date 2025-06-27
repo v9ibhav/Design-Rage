@@ -1,3 +1,74 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Custom Metal Cursor */
+* {
+  cursor: url('/metal cursor.png'), auto !important;
+}
+
+/* Specific cursor states for different interactions */
+button, 
+a, 
+[role="button"],
+.cursor-pointer {
+  cursor: url('/metal cursor.png'), pointer !important;
+}
+
+input, 
+textarea, 
+[contenteditable] {
+  cursor: url('/metal cursor.png'), text !important;
+}
+
+/* Hover states for interactive elements */
+button:hover,
+a:hover,
+[role="button"]:hover {
+  cursor: url('/metal cursor.png'), pointer !important;
+}
+
+/* Loading cursor */
+.cursor-wait {
+  cursor: url('/metal cursor.png'), wait !important;
+}
+
+/* Not allowed cursor */
+.cursor-not-allowed,
+button:disabled,
+input:disabled {
+  cursor: url('/metal cursor.png'), not-allowed !important;
+}
+
+/* Resize cursors for specific elements */
+.cursor-resize {
+  cursor: url('/metal cursor.png'), resize !important;
+}
+
+/* Text selection cursor */
+::selection {
+  background-color: rgba(236, 72, 153, 0.3);
+}
+
+/* Ensure cursor works on all interactive elements */
+.touch-manipulation {
+  cursor: url('/metal cursor.png'), auto !important;
+}
+
+/* Special cursor for game elements */
+.game-cursor {
+  cursor: url('/metal cursor.png'), crosshair !important;
+}
+
+/* Fallback for older browsers */
+@supports not (cursor: url('/metal cursor.png'), auto) {
+  * {
+    cursor: auto;
+  }
+  
+  button, 
+  a, 
+  [role="button"] {
+    cursor: pointer;
+  }
+}
