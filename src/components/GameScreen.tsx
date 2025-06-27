@@ -9,29 +9,16 @@ interface GameScreenProps {
   gameState: GameState;
   onUpdateGameState: (newState: GameState) => void;
   onGameComplete: () => void;
+  onCursorStateChange?: (state: string) => void;
 }
 
-export default function GameScreen({ gameState, onUpdateGameState, onGameComplete }: GameScreenProps) {
+export default function GameScreen({ gameState, onUpdateGameState, onGameComplete, onCursorStateChange }: GameScreenProps) {
   const [currentScenario, setCurrentScenario] = useState<Scenario | null>(null);
   const [showChaosEvent, setShowChaosEvent] = useState(false);
   const [currentChaosEvent, setCurrentChaosEvent] = useState<ChaosEvent | null>(null);
   const [responseAnimation, setResponseAnimation] = useState<string>('');
   const [showFeedback, setShowFeedback] = useState(false);
   const [selectedResponse, setSelectedResponse] = useState<Response | null>(null);
-
-  // Add cursor tracking
-  useEffect(() => {
-    const updateCursor = (e: MouseEvent) => {
-      const cursor = document.querySelector('body::before') as HTMLElement;
-      if (cursor) {
-        document.documentElement.style.setProperty('--cursor-x', `${e.clientX}px`);
-        document.documentElement.style.setProperty('--cursor-y', `${e.clientY}px`);
-      }
-    };
-
-    document.addEventListener('mousemove', updateCursor);
-    return () => document.removeEventListener('mousemove', updateCursor);
-  }, []);
 
   useEffect(() => {
     if (gameState.availableScenarios.length > 0) {
@@ -65,11 +52,12 @@ export default function GameScreen({ gameState, onUpdateGameState, onGameComplet
     setShowFeedback(true);
     
     // Add cursor effect based on response type
-    const body = document.body;
-    if (response.stressImpact > 0) {
-      body.classList.add('cursor-stress');
-    } else {
-      body.classList.add('cursor-success');
+    if (onCursorStateChange) {
+      if (response.stressImpact > 0) {
+        onCursorStateChange('cursor-stress');
+      } else {
+        onCursorStateChange('cursor-success');
+      }
     }
     
     // Delay state update for animation
@@ -84,7 +72,9 @@ export default function GameScreen({ gameState, onUpdateGameState, onGameComplet
       
       onUpdateGameState(newState);
       setResponseAnimation('');
-      body.classList.remove('cursor-stress', 'cursor-success');
+      if (onCursorStateChange) {
+        onCursorStateChange('');
+      }
     }, 1000);
     
     // Auto-advance to next round
@@ -118,6 +108,12 @@ export default function GameScreen({ gameState, onUpdateGameState, onGameComplet
       };
       
       onUpdateGameState(newState);
+      
+      // Add cursor stress effect for chaos events
+      if (onCursorStateChange) {
+        onCursorStateChange('cursor-stress');
+        setTimeout(() => onCursorStateChange && onCursorStateChange(''), 2000);
+      }
     }
     setCurrentChaosEvent(null);
   };
@@ -141,7 +137,7 @@ export default function GameScreen({ gameState, onUpdateGameState, onGameComplet
 
   if (gameState.scenariosLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen px-4 game-cursor cursor-loading">
+      <div className="flex items-center justify-center min-h-screen px-4">
         <div className="text-lg sm:text-xl font-semibold text-gray-700 text-center">Loading scenarios...</div>
       </div>
     );
@@ -149,14 +145,14 @@ export default function GameScreen({ gameState, onUpdateGameState, onGameComplet
 
   if (!currentScenario) {
     return (
-      <div className="flex items-center justify-center min-h-screen px-4 game-cursor">
+      <div className="flex items-center justify-center min-h-screen px-4">
         <div className="text-lg sm:text-xl font-semibold text-red-600 text-center">Failed to load scenario. Please try again.</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/10 to-gray-900 pt-16 sm:pt-20 p-3 sm:p-4 game-cursor">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/10 to-gray-900 pt-16 sm:pt-20 p-3 sm:p-4">
       <div className="max-w-4xl mx-auto">
         {/* Progress Meters */}
         <div className="mb-4 sm:mb-8">
@@ -171,7 +167,7 @@ export default function GameScreen({ gameState, onUpdateGameState, onGameComplet
         <div className="mb-4 sm:mb-6 flex justify-center">
           <button
             onClick={handleEndGame}
-            className="flex items-center space-x-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 active:from-red-700 active:to-orange-700 text-white font-medium transition-all duration-200 transform hover:scale-105 active:scale-95 border border-red-500/30 touch-manipulation text-sm sm:text-base game-cursor"
+            className="flex items-center space-x-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 active:from-red-700 active:to-orange-700 text-white font-medium transition-all duration-200 transform hover:scale-105 active:scale-95 border border-red-500/30 touch-manipulation text-sm sm:text-base"
           >
             <X className="w-4 h-4 sm:w-5 sm:h-5" />
             <span>End Game & See Results</span>
@@ -179,7 +175,7 @@ export default function GameScreen({ gameState, onUpdateGameState, onGameComplet
         </div>
 
         {/* Scenario Card */}
-        <div className="bg-gray-800/70 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-8 border border-gray-700 shadow-2xl mb-4 sm:mb-8 game-cursor">
+        <div className="bg-gray-800/70 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-8 border border-gray-700 shadow-2xl mb-4 sm:mb-8">
           <div className="text-center mb-6 sm:mb-8">
             <div className="inline-block bg-gradient-to-r from-pink-500 to-blue-500 text-transparent bg-clip-text text-xs sm:text-sm font-bold mb-2">
               QUESTION {gameState.currentRound}
@@ -203,7 +199,7 @@ export default function GameScreen({ gameState, onUpdateGameState, onGameComplet
                   <button
                     key={index}
                     onClick={() => handleResponseClick(response)}
-                    className={`group relative p-3 sm:p-4 rounded-lg border-2 transition-all duration-200 transform hover:scale-[1.02] active:scale-95 text-left touch-manipulation game-cursor ${
+                    className={`group relative p-3 sm:p-4 rounded-lg border-2 transition-all duration-200 transform hover:scale-[1.02] active:scale-95 text-left touch-manipulation ${
                       response.type === 'professional' 
                         ? 'border-green-500/30 hover:border-green-400/50 bg-green-900/20 hover:bg-green-900/30 active:bg-green-900/40'
                         : response.type === 'witty'

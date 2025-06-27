@@ -2,14 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom Metal Purple Cursor */
+/* Hide default cursor */
 * {
   cursor: none !important;
 }
 
-/* Create the custom cursor element */
-body::before {
-  content: '';
+/* Custom cursor container */
+.custom-cursor {
   position: fixed;
   top: 0;
   left: 0;
@@ -18,6 +17,17 @@ body::before {
   pointer-events: none;
   z-index: 9999;
   transform: translate(-2px, -2px);
+  transition: transform 0.1s ease-out;
+}
+
+/* Metal purple cursor design */
+.custom-cursor::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 25%, #c084fc 50%, #ddd6fe 75%, #8b5cf6 100%);
   clip-path: polygon(0% 0%, 100% 35%, 65% 65%, 35% 100%);
   box-shadow: 
@@ -45,21 +55,50 @@ body::before {
   }
 }
 
-/* Hover state for interactive elements */
-button:hover::before,
-a:hover::before,
-[role="button"]:hover::before,
-.cursor-pointer:hover::before {
+/* Hover state */
+.custom-cursor.cursor-hover::before {
   transform: scale(1.2);
   background: linear-gradient(135deg, #a855f7 0%, #c084fc 25%, #ddd6fe 50%, #f3e8ff 75%, #a855f7 100%);
 }
 
 /* Click state */
-button:active::before,
-a:active::before,
-[role="button"]:active::before {
+.custom-cursor.cursor-click::before {
   transform: scale(0.9);
   background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 25%, #a855f7 50%, #c084fc 75%, #7c3aed 100%);
+}
+
+/* Loading state */
+.custom-cursor.cursor-loading::before {
+  animation: cursorSpin 1s linear infinite, cursorGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes cursorSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Stress state */
+.custom-cursor.cursor-stress::before {
+  background: linear-gradient(135deg, #ef4444 0%, #f87171 25%, #fca5a5 50%, #fecaca 75%, #ef4444 100%);
+  animation: cursorShake 0.5s ease-in-out infinite, cursorGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes cursorShake {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(1px, -2px); }
+  50% { transform: translate(-2px, 1px); }
+  75% { transform: translate(1px, 1px); }
+}
+
+/* Success state */
+.custom-cursor.cursor-success::before {
+  background: linear-gradient(135deg, #10b981 0%, #34d399 25%, #6ee7b7 50%, #a7f3d0 75%, #10b981 100%);
+  animation: cursorPulse 1s ease-in-out infinite, cursorGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes cursorPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
 }
 
 /* Text selection styling */
@@ -86,74 +125,9 @@ a:active::before,
   background: linear-gradient(180deg, #a855f7, #c084fc);
 }
 
-/* Enhanced cursor for game elements */
-.game-cursor {
-  position: relative;
-}
-
-.game-cursor::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  pointer-events: none;
-  background: radial-gradient(circle at center, rgba(139, 92, 246, 0.1) 0%, transparent 70%);
-  border-radius: inherit;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.game-cursor:hover::after {
-  opacity: 1;
-}
-
-/* Loading animation for cursor */
-.cursor-loading::before {
-  animation: cursorSpin 1s linear infinite, cursorGlow 2s ease-in-out infinite alternate;
-}
-
-@keyframes cursorSpin {
-  0% { transform: translate(-2px, -2px) rotate(0deg); }
-  100% { transform: translate(-2px, -2px) rotate(360deg); }
-}
-
-/* Disabled state */
-.cursor-not-allowed::before,
-button:disabled::before,
-input:disabled::before {
-  background: linear-gradient(135deg, #6b7280 0%, #9ca3af 25%, #d1d5db 50%, #f3f4f6 75%, #6b7280 100%);
-  animation: none;
-  opacity: 0.6;
-}
-
-/* Special effects for different game states */
-.cursor-stress::before {
-  background: linear-gradient(135deg, #ef4444 0%, #f87171 25%, #fca5a5 50%, #fecaca 75%, #ef4444 100%);
-  animation: cursorShake 0.5s ease-in-out infinite, cursorGlow 2s ease-in-out infinite alternate;
-}
-
-@keyframes cursorShake {
-  0%, 100% { transform: translate(-2px, -2px); }
-  25% { transform: translate(-1px, -3px); }
-  50% { transform: translate(-3px, -1px); }
-  75% { transform: translate(-1px, -1px); }
-}
-
-.cursor-success::before {
-  background: linear-gradient(135deg, #10b981 0%, #34d399 25%, #6ee7b7 50%, #a7f3d0 75%, #10b981 100%);
-  animation: cursorPulse 1s ease-in-out infinite, cursorGlow 2s ease-in-out infinite alternate;
-}
-
-@keyframes cursorPulse {
-  0%, 100% { transform: translate(-2px, -2px) scale(1); }
-  50% { transform: translate(-2px, -2px) scale(1.1); }
-}
-
-/* Ensure cursor works on mobile devices */
+/* Hide cursor on mobile devices */
 @media (hover: none) and (pointer: coarse) {
-  body::before {
+  .custom-cursor {
     display: none;
   }
   
@@ -164,7 +138,7 @@ input:disabled::before {
 
 /* High contrast mode support */
 @media (prefers-contrast: high) {
-  body::before {
+  .custom-cursor::before {
     background: linear-gradient(135deg, #ffffff 0%, #e5e7eb 50%, #9ca3af 100%);
     border: 2px solid #000000;
   }
@@ -172,17 +146,13 @@ input:disabled::before {
 
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
-  body::before {
+  .custom-cursor::before {
     animation: none;
   }
   
-  .cursor-loading::before,
-  .cursor-stress::before,
-  .cursor-success::before {
+  .custom-cursor.cursor-loading::before,
+  .custom-cursor.cursor-stress::before,
+  .custom-cursor.cursor-success::before {
     animation: none;
   }
-}/* CSS Variables for cursor positioning */
-:root { --cursor-x: 0px; --cursor-y: 0px; }
-
-/* Update cursor position */
-body::before { left: var(--cursor-x); top: var(--cursor-y); }
+}
