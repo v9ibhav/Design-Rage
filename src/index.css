@@ -4,7 +4,7 @@
 
 /* Custom Metal Cursor */
 * {
-  cursor: url('/metal cursor.png'), auto !important;
+  cursor: url('/metal%20cursor.png'), auto !important;
 }
 
 /* Specific cursor states for different interactions */
@@ -12,37 +12,37 @@ button,
 a, 
 [role="button"],
 .cursor-pointer {
-  cursor: url('/metal cursor.png'), pointer !important;
+  cursor: url('/metal%20cursor.png'), pointer !important;
 }
 
 input, 
 textarea, 
 [contenteditable] {
-  cursor: url('/metal cursor.png'), text !important;
+  cursor: url('/metal%20cursor.png'), text !important;
 }
 
 /* Hover states for interactive elements */
 button:hover,
 a:hover,
 [role="button"]:hover {
-  cursor: url('/metal cursor.png'), pointer !important;
+  cursor: url('/metal%20cursor.png'), pointer !important;
 }
 
 /* Loading cursor */
 .cursor-wait {
-  cursor: url('/metal cursor.png'), wait !important;
+  cursor: url('/metal%20cursor.png'), wait !important;
 }
 
 /* Not allowed cursor */
 .cursor-not-allowed,
 button:disabled,
 input:disabled {
-  cursor: url('/metal cursor.png'), not-allowed !important;
+  cursor: url('/metal%20cursor.png'), not-allowed !important;
 }
 
 /* Resize cursors for specific elements */
 .cursor-resize {
-  cursor: url('/metal cursor.png'), resize !important;
+  cursor: url('/metal%20cursor.png'), resize !important;
 }
 
 /* Text selection cursor */
@@ -52,16 +52,16 @@ input:disabled {
 
 /* Ensure cursor works on all interactive elements */
 .touch-manipulation {
-  cursor: url('/metal cursor.png'), auto !important;
+  cursor: url('/metal%20cursor.png'), auto !important;
 }
 
 /* Special cursor for game elements */
 .game-cursor {
-  cursor: url('/metal cursor.png'), crosshair !important;
+  cursor: url('/metal%20cursor.png'), crosshair !important;
 }
 
-/* Fallback for older browsers */
-@supports not (cursor: url('/metal cursor.png'), auto) {
+/* Alternative approach with base64 encoding if file path doesn't work */
+@supports not (cursor: url('/metal%20cursor.png'), auto) {
   * {
     cursor: auto;
   }
@@ -71,4 +71,14 @@ input:disabled {
   [role="button"] {
     cursor: pointer;
   }
+}
+
+/* Force cursor on body and html */
+html, body {
+  cursor: url('/metal%20cursor.png'), auto !important;
+}
+
+/* Ensure cursor appears on all game screens */
+#root {
+  cursor: url('/metal%20cursor.png'), auto !important;
 }
